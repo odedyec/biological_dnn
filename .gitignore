@@ -1,0 +1,6 @@
+train/*
+test/*
+train.zip
+test.zip
+.idea*
+*.pyc
