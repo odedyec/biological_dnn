@@ -1,5 +1,5 @@
 from dataset_generator import *
-# from model import *
+from model import *
 import sys
 
 
@@ -42,12 +42,19 @@ def main(PBM_FILE, SELEX_FILES):
     pbm_data = pbm_dataset_generator(PBM_FILE)
     print pbm_data.shape
     selex_4, cnt4  = selex_dataset_generator(SELEX_FILES[-1])
+    selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
     print selex_4.shape
     print cnt4.shape
+
+    ''' Start training '''
+    model = build_model()
+    model.summary()
+    train(model, selex_4, cnt4)
 
 
 if __name__ == '__main__':
     # get_argv()
     PBM_FILE, SELEX_FILES = parse_args('train/TF1_pbm.txt', [0, 1, 2, 3, 4])
     main(PBM_FILE, SELEX_FILES)
+
 
