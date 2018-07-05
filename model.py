@@ -1,6 +1,16 @@
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D
-import numpy
+import pandas as pd
+import sys
+import numpy as np
+from keras.models import Sequential
+from sklearn.preprocessing import OneHotEncoder
+from keras.models import Sequential
+from keras.layers import *
+from keras.optimizers import SGD
+from scipy.stats.stats import pearsonr
+from keras.regularizers import *
+import numpy as np
 
 
 def build_model():
