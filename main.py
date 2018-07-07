@@ -42,14 +42,27 @@ def main(PBM_FILE, SELEX_FILES):
     pbm_data = pbm_dataset_generator(PBM_FILE)
     print pbm_data.shape
     selex_4, cnt4  = selex_dataset_generator(SELEX_FILES[-1])
+    cnt4 = cnt4.astype(float)
     selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
     print selex_4.shape
     print cnt4.shape
+    cnt4 = cnt4 / cnt4[0]
+    print "normalized labels", cnt4[0], cnt4[1], cnt4[2], cnt4[3], cnt4[4]
 
     ''' Start training '''
     model = build_model()
     model.summary()
     train(model, selex_4, cnt4)
+
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("model.h5")
+    print("Saved model to disk")
+
+    model.save('entire_model.h5')
 
 
 if __name__ == '__main__':

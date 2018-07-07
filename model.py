@@ -39,7 +39,7 @@ def build_model(datasize=20):
     # model.add(Activation('softmax'))
 
     myoptimizer = RMSprop(lr=0.001, rho=0.9, epsilon=1e-06)
-    model.compile(loss='mse', optimizer=myoptimizer, metrics=['accuracy'])
+    model.compile(loss='mse', optimizer='adam')  #myoptimizer) #, metrics=['accuracy'])
     return model
 
 
