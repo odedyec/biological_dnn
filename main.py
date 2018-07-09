@@ -49,20 +49,14 @@ def main(PBM_FILE, SELEX_FILES):
     cnt4 = cnt4 / cnt4[0]
     print "normalized labels", cnt4[0], cnt4[1], cnt4[2], cnt4[3], cnt4[4]
 
-    ''' Start training '''
+    """ Setup model """
     model = build_model()
     model.summary()
-    train(model, selex_4, cnt4)
+    train(model, selex_4[0:200, :,:,:], cnt4[0:200])
+    # save_network(model)
 
-    # serialize model to JSON
-    model_json = model.to_json()
-    with open("model.json", "w") as json_file:
-        json_file.write(model_json)
-    # serialize weights to HDF5
-    model.save_weights("model.h5")
-    print("Saved model to disk")
-
-    model.save('entire_model.h5')
+    # model = load_model(model)
+    print predict(model, selex_4[0:100, :,:,:])
 
 
 if __name__ == '__main__':

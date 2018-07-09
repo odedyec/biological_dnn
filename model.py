@@ -48,5 +48,28 @@ def train(model, X_train, Y_train):
     # data_code = 'DATACODE'
     # topdir = 'TOPDIR'
     # model_arch = 'MODEL_ARCH'
-    model.fit(X_train, Y_train, batch_size=100, nb_epoch=5, validation_split=0.1)
+    model.fit(X_train, Y_train, batch_size=1, nb_epoch=5, validation_split=0.1)
     return model
+
+
+
+def save_network(model):
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights("model.h5")
+    print("Saved model to disk")
+
+    model.save('entire_model.h5')
+
+
+def load_model(model):
+    model.load_weights('model.h5')
+    return model
+
+
+def predict(model, X_test):
+    # model = build_model()
+    return model.predict(X_test)
