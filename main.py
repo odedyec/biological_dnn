@@ -46,17 +46,19 @@ def main(PBM_FILE, SELEX_FILES):
     selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
     print selex_4.shape
     print cnt4.shape
-    cnt4 = cnt4 / cnt4[0]
-    print "normalized labels", cnt4[0], cnt4[1], cnt4[2], cnt4[3], cnt4[4]
+    cnt4 = cnt4 #/ cnt4[0]
+    print "normalized labels", cnt4[0], cnt4[1], cnt4[200], cnt4[300], cnt4[400]
 
     """ Setup model """
     model = build_model()
     model.summary()
-    train(model, selex_4[0:200, :,:,:], cnt4[0:200])
+    model = train(model, selex_4[0:1000, :,:,:], cnt4[0:1000])
     # save_network(model)
 
     # model = load_model(model)
     print predict(model, selex_4[0:100, :,:,:])
+    print '-------------------------------'
+    print predict(model, selex_4[10000:10100, :, :, :])
 
 
 if __name__ == '__main__':
