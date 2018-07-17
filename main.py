@@ -1,7 +1,8 @@
 from dataset_generator import *
 from model import *
 import sys
-
+import numpy as np
+from sklearn.metrics import average_precision_score
 
 
 def get_argv():
@@ -41,24 +42,26 @@ def main(PBM_FILE, SELEX_FILES):
 
     pbm_data = pbm_dataset_generator(PBM_FILE)
     print pbm_data.shape
-    selex_4, cnt4  = selex_dataset_generator(SELEX_FILES[-1])
-    cnt4 = cnt4.astype(float)
-    selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
-    print selex_4.shape
-    print cnt4.shape
-    cnt4 = cnt4 #/ cnt4[0]
-    print "normalized labels", cnt4[0], cnt4[1], cnt4[200], cnt4[300], cnt4[400]
+    selex_4, _ = selex_dataset_generator(SELEX_FILES[-1])
+    selex_0, _ = selex_dataset_generator(SELEX_FILES[0])
 
+    selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
+    selex_0 = selex_0.reshape((len(selex_0), 20, 4, 1))
+
+    x_train, x_test, y_train, y_test = split_train_test(selex_0, selex_4, 10000)
+    print "Train size", x_train.shape, y_train.shape
+    print "Test size", x_test.shape, y_test.shape
     """ Setup model """
     model = build_model()
     model.summary()
-    model = train(model, selex_4[0:1000, :,:,:], cnt4[0:1000])
-    # save_network(model)
+    model = train(model, x_train, y_train)
+    save_network(model)
 
     # model = load_model(model)
-    print predict(model, selex_4[0:100, :,:,:])
-    print '-------------------------------'
-    print predict(model, selex_4[10000:10100, :, :, :])
+    print "==============================="
+    p1 = np.argmax(predict(model, x_test), axis=1)
+    print p1
+
 
 
 if __name__ == '__main__':
@@ -67,3 +70,9 @@ if __name__ == '__main__':
     main(PBM_FILE, SELEX_FILES)
 
 
+
+
+    # from sklearn.metrics import average_precision_score
+    # predict=model.predict(np.array(test))
+    # true=[int(x) for x in np.append(np.ones(100), np.zeros(len(test)-100), axis=0)]
+    # print(average_precision_score(true, predict))

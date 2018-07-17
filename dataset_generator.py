@@ -3,6 +3,49 @@ from string import maketrans
 import numpy as np
 
 
+
+def label_generator(size1, size2):
+	"""
+	Create a two coloum label set
+	:param size1:
+	:param size2:
+	:return:
+	"""
+	lab1 = np.concatenate((
+                        np.ones((size1, 1), dtype=float),
+                        np.zeros((size1, 1), dtype=float)),
+                   axis=1)
+	lab2 = np.concatenate((
+        np.zeros((size2, 1), dtype=float),
+        np.ones((size2, 1), dtype=float)),
+        axis=1)
+
+	lab = np.concatenate((lab1, lab2), axis=0)
+	return lab
+
+
+
+def split_train_test(selex0, selex1, train_size):
+	"""
+	split the selex inputs into train and test sets
+	:param selex0:
+	:param selex1:
+	:param train_size:
+	:return:
+	"""
+	np.random.shuffle(selex0)
+	np.random.shuffle(selex1)
+	x_train = np.concatenate((selex0[0:int(train_size/2), :, :, :], selex1[0:int(train_size/2), :, :, :]), axis=0)
+	x_test = np.concatenate((selex0[int(train_size / 2)+1:, :, :, :], selex1[int(train_size / 2)+1:, :, :, :]), axis=0)
+
+	y_train = label_generator(int(train_size/2), int(train_size/2))
+
+	y_test = label_generator(int(len(selex0)-train_size/2-1), int(len(selex1)-train_size/2-1))
+
+	return x_train, x_test, y_train, y_test
+
+
+
 def oneHot(string):
 	"""
 	One Hot encoding of a DNA sequence ACGT -> 0123 -> [1, 0, 0, 0], [0, 1, 0, 0], ...
