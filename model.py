@@ -21,7 +21,7 @@ def build_model(datasize=20):
     model.add(Conv2D(256, (3, 5), border_mode='same',
                      activation='relu'))  # , W_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(1, 5), strides=(1, 5), padding='same'))
-    model.add(Conv2D(512, (5, 5), border_mode='same',
+    model.add(Conv2D(512, (3, 5), border_mode='same',
                      activation='relu'))  # , W_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(1, 5), strides=(1, 1), padding='same'))
     # model.add(Convolution2D(256, 1, 5, border_mode='same', activation='relu', W_constraint=maxnorm(W_maxnorm)))
@@ -48,7 +48,7 @@ def train(model, X_train, Y_train):
     # data_code = 'DATACODE'
     # topdir = 'TOPDIR'
     # model_arch = 'MODEL_ARCH'
-    model.fit(X_train, Y_train, batch_size=100, nb_epoch=1, validation_split=0.3)
+    model.fit(X_train, Y_train, batch_size=100, nb_epoch=5, validation_split=0.3)
     return model
 
 

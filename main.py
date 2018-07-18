@@ -1,9 +1,11 @@
 from dataset_generator import *
 from model import *
 import sys
-import numpy as np
-from sklearn.metrics import average_precision_score
+from result_analyzer import *
 
+
+TRAIN = False
+GENERATE_DATASET = False
 
 def get_argv():
     """
@@ -41,27 +43,33 @@ def parse_args(PBM_FILE, SELEX_FILES):
 def main(PBM_FILE, SELEX_FILES):
 
     pbm_data = pbm_dataset_generator(PBM_FILE)
-    print pbm_data.shape
-    selex_4, _ = selex_dataset_generator(SELEX_FILES[-1])
-    selex_0, _ = selex_dataset_generator(SELEX_FILES[0])
+    if GENERATE_DATASET:  # load data and OneHot encode data
+        print pbm_data.shape
+        selex_4, _ = selex_dataset_generator(SELEX_FILES[-1])
+        selex_0, _ = selex_dataset_generator(SELEX_FILES[0])
 
-    selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
-    selex_0 = selex_0.reshape((len(selex_0), 20, 4, 1))
+        selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
+        selex_0 = selex_0.reshape((len(selex_0), 20, 4, 1))
 
-    x_train, x_test, y_train, y_test = split_train_test(selex_0, selex_4, 10000)
+        x_train, x_test, y_train, y_test = split_train_test(selex_0, selex_4, 150000)
+        save_dataset(x_train, x_test, y_train, y_test)
+    else:  # Load from data_tf1.hdf5 file
+        x_train, x_test, y_train, y_test = load_dataset()
     print "Train size", x_train.shape, y_train.shape
     print "Test size", x_test.shape, y_test.shape
+
     """ Setup model """
     model = build_model()
     model.summary()
-    model = train(model, x_train, y_train)
-    save_network(model)
-
-    # model = load_model(model)
+    if TRAIN:  # Train network
+        model = train(model, x_train, y_train)
+        save_network(model)
+    else:      # Load network from file
+        model = load_model(model)
     print "==============================="
-    p1 = np.argmax(predict(model, x_test), axis=1)
-    print p1
 
+    predict_and_calculate_aupr(model, x_test, y_test)
+    predict_on_pbm(model, pbm_data)
 
 
 if __name__ == '__main__':
@@ -69,10 +77,3 @@ if __name__ == '__main__':
     PBM_FILE, SELEX_FILES = parse_args('train/TF1_pbm.txt', [0, 1, 2, 3, 4])
     main(PBM_FILE, SELEX_FILES)
 
-
-
-
-    # from sklearn.metrics import average_precision_score
-    # predict=model.predict(np.array(test))
-    # true=[int(x) for x in np.append(np.ones(100), np.zeros(len(test)-100), axis=0)]
-    # print(average_precision_score(true, predict))

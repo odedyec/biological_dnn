@@ -1,7 +1,6 @@
 from keras.utils import to_categorical
-from string import maketrans
 import numpy as np
-
+import pandas as pd
 
 
 def label_generator(size1, size2):
@@ -52,13 +51,12 @@ def oneHot(string):
 	:param string: DNA sequence with A, C, G, or T
 	:return: a matrix of the encoded sequence
 	"""
-	# for x in range(len(string)):
-		# string = string+'A'
-	trantab=maketrans('ACGT','0123')
-	# string=string+'ACGT'
-#	data=list(string.translate({ord('A'):'0',ord('C'):'1',ord('G'):'2',ord('T'):'3'}))
-	data=list(string.translate(trantab))
-	data = map(int, data)
+
+	string = string.replace('A', '0')
+	string = string.replace('C', '1')
+	string = string.replace('G', '2')
+	string = string.replace('T', '3')
+	data = list(map(int, string))
 	return to_categorical(data, 4)
 
 
@@ -84,19 +82,39 @@ def selex_dataset_generator(filename):
 	:param filename:
 	:return:
 	"""
-	f = open(filename, 'r')
+
+	dat = pd.read_csv(filename, delimiter='\t', usecols=[0], header=-1)
+	f = dat.get(0)
 	data = []
-	labels = []
-	for line in f:
-		line2 = line.split('\t')
-		encoded_line = oneHot(line2[0])
+	import time
+	t = time.time()
+	for line2 in f:
+		encoded_line = oneHot(line2)
 		if (encoded_line.shape != (20, 4)):
 			print "Warning! not a (20, 4) shape, but", encoded_line.shape
 			continue
 		# print encoded_line.shape
 		data.append(encoded_line)
-		labels.append(int(line2[1]))
-	f.close()
+
 	data = np.asarray(data)
-	labels = np.array(labels)
-	return data, labels
+	print 'Took ', time.time() - t, ' seconds to encode data, for ', filename
+	return data, None
+
+
+def save_dataset(x_train, x_test, y_train, y_test):
+	import h5py
+	hdf5_file = h5py.File('data_tf1.hdf5', mode='w')
+	hdf5_file.create_dataset("x_train", data = x_train)
+	hdf5_file.create_dataset("y_train", data = y_train)
+	hdf5_file.create_dataset("x_test", data=x_test)
+	hdf5_file.create_dataset("y_test", data=y_test)
+	hdf5_file.close()
+
+def load_dataset():
+	import h5py
+	f = h5py.File('data_tf1.hdf5', 'r')
+	x_train = f["x_train"].value
+	y_train = f["y_train"].value
+	x_test = f["x_test"].value
+	y_test = f["y_test"].value
+	return x_train, x_test, y_train, y_test
