@@ -3,8 +3,9 @@ from model import *
 import sys
 from result_analyzer import *
 
-
-TRAIN = False
+TRAIN_SIZE = 150000
+SELEX_SIZE = 36
+TRAIN = True
 GENERATE_DATASET = False
 
 def get_argv():
@@ -48,10 +49,10 @@ def main(PBM_FILE, SELEX_FILES):
         selex_4, _ = selex_dataset_generator(SELEX_FILES[-1])
         selex_0, _ = selex_dataset_generator(SELEX_FILES[0])
 
-        selex_4 = selex_4.reshape((len(selex_4), 20, 4, 1))
-        selex_0 = selex_0.reshape((len(selex_0), 20, 4, 1))
+        selex_4 = selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1))
+        selex_0 = selex_0.reshape((len(selex_0), SELEX_SIZE, 4, 1))
 
-        x_train, x_test, y_train, y_test = split_train_test(selex_0, selex_4, 150000)
+        x_train, x_test, y_train, y_test = split_train_test(selex_0, selex_4, TRAIN_SIZE)
         save_dataset(x_train, x_test, y_train, y_test)
     else:  # Load from data_tf1.hdf5 file
         x_train, x_test, y_train, y_test = load_dataset()
@@ -59,7 +60,7 @@ def main(PBM_FILE, SELEX_FILES):
     print "Test size", x_test.shape, y_test.shape
 
     """ Setup model """
-    model = build_model()
+    model = build_model(SELEX_SIZE)
     model.summary()
     if TRAIN:  # Train network
         model = train(model, x_train, y_train)

@@ -8,15 +8,16 @@ def predict_on_pbm(model, pbm_dat):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
     print pbm_dat.shape
     how_much = len(pbm_dat)
-    res = np.zeros((how_much, 1))
-    for i in xrange(16):
-        p = predict(model, pbm_dat[0:how_much, (i+0):(i+20), :, :])
-        res = res + (p[:, 1] - p[:, 0]).reshape(how_much, 1)
-    np.savetxt('pbm.out', res, fmt='%.3f', newline=os.linesep)
+    # res = np.zeros((how_much, 1))
+    res = predict(model, pbm_dat[:, 0:36, :, :])
+    # for i in xrange(16):
+    #     p = predict(model, pbm_dat[0:how_much, (i+0):(i+20), :, :])
+    #     res = res + (p[:, 1]).reshape(how_much, 1)
+    np.savetxt('pbm.csv', res, fmt='%.3f', newline=os.linesep)
     idx = np.arange(how_much).reshape(how_much, 1)
     res2 = np.concatenate((idx, res), axis=1)
     res2 = np.sort(res2, axis=-1)
-    np.savetxt('pbm2.out', res2, fmt='%.3f', newline=os.linesep)
+    np.savetxt('pbm2.csv', res2, fmt='%.3f', newline=os.linesep)
     print res2
 
 
