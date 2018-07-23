@@ -23,6 +23,13 @@ def label_generator(size1, size2):
 	return lab
 
 
+def suffle_data_label(a, b):
+	c = np.c_[a.reshape(len(a), -1), b.reshape(len(b), -1)]
+	np.random.shuffle(c)
+	a2 = c[:, :a.size // len(a)].reshape(a.shape)
+	b2 = c[:, a.size // len(a):].reshape(b.shape)
+	return a2, b2
+
 
 def split_train_test(selex0, selex1, train_size):
 	"""
@@ -91,11 +98,12 @@ def selex_dataset_generator(filename):
 	t = time.time()
 	for line2 in f:
 		encoded_line = oneHot(line2)
-		if (encoded_line.shape != (20, 4)):
-			print "Warning! not a (20, 4) shape, but", encoded_line.shape
-			continue
+		# if (encoded_line.shape != (20, 4)):
+		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
+		# 	continue
 		# print encoded_line.shape
-		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((8, 4)), encoded_line)), 0.25 * np.ones((8, 4))))
+		padding = (36 - len(encoded_line)) / 2
+		encoded_line = np.concatenate((np.concatenate((0.125 * np.ones((padding, 4)), encoded_line)), 0.125 * np.ones((padding, 4))))
 		data.append(encoded_line)
 
 	data = np.asarray(data)
