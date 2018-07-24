@@ -107,7 +107,7 @@ def selex_dataset_generator(filename):
 		data.append(encoded_line)
 
 	data = np.asarray(data)
-	print 'Took ', time.time() - t, ' seconds to encode data, for ', filename
+	print('Took ', time.time() - t, ' seconds to encode data, for ', filename)
 	return data, None
 
 
