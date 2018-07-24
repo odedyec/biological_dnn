@@ -92,14 +92,14 @@ def selex_dataset_generator(filename):
 	for line2 in f:
 		encoded_line = oneHot(line2)
 		if (encoded_line.shape != (20, 4)):
-			print "Warning! not a (20, 4) shape, but", encoded_line.shape
+			# print "Warning! not a (20, 4) shape, but", encoded_line.shape
 			continue
 		# print encoded_line.shape
 		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((8, 4)), encoded_line)), 0.25 * np.ones((8, 4))))
 		data.append(encoded_line)
 
 	data = np.asarray(data)
-	print 'Took ', time.time() - t, ' seconds to encode data, for ', filename
+	print ('Took ', time.time() - t, ' seconds to encode data, for ', filename)
 	return data, None
 
 

@@ -14,9 +14,9 @@ def get_argv():
     :return:
     """
     if len(sys.argv) < 3:
-        print "Length of input arguments is ", len(sys.argv)
-        print "\nUsage:\n python main.py pbm_file SELEX_FILE_0 SELEX_FILE_1 ..."
-        print "\nUsage2:\n python main.py pbm_file #of_selex_0 #of_selex_1 ..."
+        print("Length of input arguments is ", len(sys.argv))
+        print("\nUsage:\n python main.py pbm_file SELEX_FILE_0 SELEX_FILE_1 ...")
+        print("\nUsage2:\n python main.py pbm_file #of_selex_0 #of_selex_1 ...")
         sys.exit(0)
 
     PBM_FILE = sys.argv[1]
@@ -45,7 +45,7 @@ def main(PBM_FILE, SELEX_FILES):
 
     pbm_data = pbm_dataset_generator(PBM_FILE)
     if GENERATE_DATASET:  # load data and OneHot encode data
-        print pbm_data.shape
+        print(pbm_data.shape)
         selex_4, _ = selex_dataset_generator(SELEX_FILES[-1])
         selex_0, _ = selex_dataset_generator(SELEX_FILES[0])
 
@@ -56,8 +56,8 @@ def main(PBM_FILE, SELEX_FILES):
         save_dataset(x_train, x_test, y_train, y_test)
     else:  # Load from data_tf1.hdf5 file
         x_train, x_test, y_train, y_test = load_dataset()
-    print "Train size", x_train.shape, y_train.shape
-    print "Test size", x_test.shape, y_test.shape
+    print("Train size", x_train.shape, y_train.shape)
+    print("Test size", x_test.shape, y_test.shape)
 
     """ Setup model """
     model = build_model(SELEX_SIZE)
@@ -67,7 +67,7 @@ def main(PBM_FILE, SELEX_FILES):
         save_network(model)
     else:      # Load network from file
         model = load_model(model)
-    print "==============================="
+    print ("===============================")
 
     predict_and_calculate_aupr(model, x_test, y_test)
     predict_on_pbm(model, pbm_data)
