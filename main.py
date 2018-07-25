@@ -8,7 +8,7 @@ from result_analyzer import *
 TRAIN_SIZE = 100000
 SELEX_SIZE = 36
 TRAIN = True
-GENERATE_DATASET = True
+GENERATE_DATASET = False
 LOAD_ENTIRE_MODEL = False
 
 
@@ -84,15 +84,15 @@ def main(PBM_FILE, SELEX_FILES):
             model = load_model(model)
         print("===============================")
 
-    # predict_and_calculate_aupr(model, x_test, y_test)
+    predict_and_calculate_aupr(model, x_test, y_test)
     predict_on_pbm(model, pbm_data)
 
 
 if __name__ == '__main__':
-    PBM_FILE, SELEX_FILES = get_argv()
+    PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]  # get_argv()
     print(PBM_FILE)
     print(SELEX_FILES)
-    # PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]
+    # PBM_FILE, SELEX_FILES =
     PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
     print(PBM_FILE)
     print(SELEX_FILES)
