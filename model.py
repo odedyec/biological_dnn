@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.optimizers import Adadelta, RMSprop, SGD
+from keras.optimizers import Adadelta, RMSprop, SGD, Adam
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Dropout, Activation
 import numpy as np
 from scipy.stats.stats import pearsonr
@@ -41,7 +41,7 @@ def build_model(datasize=36):
 
     # myoptimizer = RMSprop(lr=0.1, rho=0.9, epsilon=1e-06)
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
-    adam = keras.optimizers.Adam(lr=0.000001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    adam = Adam(lr=0.000001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     model.compile(loss='mse', optimizer=adam)#, metrics=['accuracy'])
     return model
 
