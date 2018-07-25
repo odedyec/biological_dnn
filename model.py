@@ -17,7 +17,7 @@ def build_model(datasize=36):
     k_l= 6#5#3 #2
     k_h= 4#1
     p_l= 4
-    p_h= 1
+    p_h= 4
 
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(k_h, k_l),padding='same', input_shape=(datasize, 4, 1), activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -42,9 +42,9 @@ def build_model(datasize=36):
     # model.add(Activation('softmax'))
 
     myoptimizer = RMSprop(lr=0.1, rho=0.9, epsilon=1e-06)
-    # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
-    adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-    model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
+    # adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    # model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
     # model.compile(loss='mse', optimizer=adam, metrics=['accuracy'])
     return model
 
