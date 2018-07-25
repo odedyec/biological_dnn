@@ -14,10 +14,10 @@ def build_model(datasize=36):
     # datasize = DATASIZE
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
-    k_l= 6#5#3 #2
-    k_h= 4#1
-    p_l= 4
-    p_h= 4
+    k_l= 1#5#3 #2
+    k_h= 3#1
+    p_l= 1
+    p_h= 3
 
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(k_h, k_l),padding='same', input_shape=(datasize, 4, 1), activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -54,7 +54,7 @@ def train(model, X_train, Y_train):
     # data_code = 'DATACODE'
     # topdir = 'TOPDIR'
     # model_arch = 'MODEL_ARCH'
-    model.fit(X_train, Y_train, batch_size=10, epochs=50, validation_split=0.2, shuffle=True)
+    model.fit(X_train, Y_train, batch_size=512, epochs=50, validation_split=0.2, shuffle=True)
     # model.fit(X_train, Y_train, batch_size=512, epochs=5, validation_split=0.2, shuffle=True)
     return model
 
