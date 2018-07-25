@@ -42,7 +42,7 @@ def build_model(datasize=36):
     # myoptimizer = RMSprop(lr=0.1, rho=0.9, epsilon=1e-06)
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     adam = Adam(lr=0.000001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-    model.compile(loss='mse', optimizer=adam)#, metrics=['accuracy'])
+    model.compile(loss='mse', optimizer=adam, metrics=['accuracy'])
     return model
 
 
