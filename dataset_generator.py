@@ -102,7 +102,7 @@ def selex_dataset_generator(filename):
 		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
 		# 	continue
 		# print encoded_line.shape
-		padding = (36 - len(encoded_line)) / 2
+		padding = int((36 - len(encoded_line)) / 2)
 		encoded_line = np.concatenate((np.concatenate((0.125 * np.ones((padding, 4)), encoded_line)), 0.125 * np.ones((padding, 4))))
 		data.append(encoded_line)
 

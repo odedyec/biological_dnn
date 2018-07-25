@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from dataset_generator import *
 from model import *
@@ -27,7 +27,7 @@ def get_argv():
     PBM_FILE = sys.argv[1]
     SELEX_FILES = [sys.argv[i] for i in range(2, len(sys.argv))]
     if SELEX_FILES[0].isdigit():
-        SELEX_FILES = map(int, SELEX_FILES)
+        SELEX_FILES = list(map(int, SELEX_FILES))
     return PBM_FILE, SELEX_FILES
 
 
@@ -92,6 +92,9 @@ if __name__ == '__main__':
     PBM_FILE, SELEX_FILES = get_argv()
     print(PBM_FILE)
     print(SELEX_FILES)
-    # PBM_FILE, SELEX_FILES = parse_args('train/TF1_pbm.txt', [0, 1, 2, 3, 4])
+    # PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]
+    PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
+    print(PBM_FILE)
+    print(SELEX_FILES)
     main(PBM_FILE, SELEX_FILES)
 

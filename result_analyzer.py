@@ -6,7 +6,7 @@ import os
 
 def predict_on_pbm(model, pbm_dat):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
-    print pbm_dat.shape
+    print (pbm_dat.shape)
     how_much = len(pbm_dat)
     # res = np.zeros((how_much, 1))
     res = predict(model, pbm_dat[:, 0:36, :, :])
@@ -22,7 +22,7 @@ def predict_on_pbm(model, pbm_dat):
     f = open('result.txt', 'a')
     f.write(str(num_correct)+'\n')
     f.close()
-    print num_correct
+    print (num_correct)
 
 
 
