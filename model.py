@@ -14,16 +14,18 @@ def build_model(datasize=36):
     # datasize = DATASIZE
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
-    k_l= 10#5#3 #2
+    k_l= 6#5#3 #2
     k_h= 4#1
+    p_l= 4
+    p_h= 1
 
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(k_h, k_l),padding='same', input_shape=(datasize, 4, 1), activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(1, 5), strides=(1, 1),padding='same'))
+    model.add(MaxPool2D(pool_size=(p_h, p_l), strides=(1, 1),padding='same'))
     model.add(Conv2D(64, kernel_size=(k_h, k_l),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(1, 5), strides=(1, 1), padding='same'))
+    model.add(MaxPool2D(pool_size=(p_h, p_l), strides=(1, 1), padding='same'))
     model.add(Conv2D(64, kernel_size=(k_h, k_l),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(1, 5), strides=(1, 1), padding='same'))
+    model.add(MaxPool2D(pool_size=(p_h, p_l), strides=(1, 1), padding='same'))
     # model.add(Conv2D(128, (5, 2),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -31,18 +33,19 @@ def build_model(datasize=36):
 
     model.add(Flatten())
 
-    model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.3))
+    # model.add(Dense(64, activation='relu'))
+    # # model.add(Dropout(0.3))
     model.add(Dense(64, activation='relu'))
     # model.add(Dropout(0.5))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(2, activation='sigmoid'))
     # model.add(Activation('softmax'))
 
-    # myoptimizer = RMSprop(lr=0.1, rho=0.9, epsilon=1e-06)
+    myoptimizer = RMSprop(lr=0.1, rho=0.9, epsilon=1e-06)
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
-    adam = Adam(lr=0.000001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-    model.compile(loss='mse', optimizer=adam, metrics=['accuracy'])
+    adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
+    # model.compile(loss='mse', optimizer=adam, metrics=['accuracy'])
     return model
 
 
