@@ -34,9 +34,9 @@ def build_model(datasize=36):
     model.add(Flatten())
 
     model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.3))
+    # model.add(Dropout(0.3))
     model.add(Dense(64, activation='relu'))
-    model.add(Dropout(0.5))
+    # model.add(Dropout(0.5))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(2, activation='sigmoid'))
     # model.add(Activation('softmax'))
