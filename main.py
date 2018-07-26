@@ -5,7 +5,7 @@ from model import *
 import sys
 from result_analyzer import *
 
-TRAIN_SIZE = 100000
+TRAIN_SIZE = 240000
 SELEX_SIZE = 36
 TRAIN = True
 GENERATE_DATASET = False
@@ -78,8 +78,9 @@ def main(PBM_FILE, SELEX_FILES):
         model = build_model(SELEX_SIZE)
         model.summary()
         if TRAIN:  # Train network
-            model = train(model, x_train, y_train)
+            model, history = train(model, x_train, y_train)
             save_network(model)
+            plot_acc_loss(history)
         else:      # Load network from file
             model = load_model(model)
         print("===============================")
