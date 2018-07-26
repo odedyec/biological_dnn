@@ -37,10 +37,8 @@ def build_model(datasize=36):
     # model.add(Dropout(0.3))
     # model.add(Dense(64, activation='relu'))
     # model.add(Dropout(0.5))
-    model.add(Dense(2, activation='sigmoid'))
+    model.add(Dense(5, activation='sigmoid'))
     # model.add(Activation('softmax'))
-
-    myoptimizer = RMSprop(lr=0.00001, rho=0.9, epsilon=1e-06)
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model

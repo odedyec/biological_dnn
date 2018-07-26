@@ -5,7 +5,6 @@ from model import *
 import sys
 from result_analyzer import *
 
-TRAIN_SIZE = 100000
 SELEX_SIZE = 36
 TRAIN = True
 GENERATE_DATASET = True
