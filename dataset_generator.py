@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import time
 
-TRAIN_SIZE = 400000
-TEST_SIZE = 400000
+TRAIN_SIZE = 100000
+TEST_SIZE = 100000
 
 def label_generator(num_of_labels, size):
 	"""
