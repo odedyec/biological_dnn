@@ -77,13 +77,13 @@ def build_model(datasize=36):
     model = Sequential()
     model.add(Conv2D(64, (4, 9), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
+    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
     model.add(Conv2D(64, (4, 6), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
+    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
     model.add(Conv2D(64, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
+    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -101,7 +101,8 @@ def build_model(datasize=36):
     # model.add(Dropout(0.5))
     model.add(Dense(5, activation='sigmoid'))
     # model.add(Activation('softmax'))
-    model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+    adam1 = keras.optimizers.Adam(lr=0.001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    model.compile(loss='mse', optimizer=adam1, metrics=['accuracy'])
     # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model
