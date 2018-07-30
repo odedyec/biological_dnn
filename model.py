@@ -1,31 +1,34 @@
 from keras.models import Sequential
-from keras.optimizers import Adadelta, RMSprop, SGD, Adam
+from keras.optimizers import Adadelta, RMSprop, SGD
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Dropout, Activation
 import numpy as np
 from scipy.stats.stats import pearsonr
 from keras.regularizers import *
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import TensorBoard
 from keras.constraints import maxnorm
-
-
+from keras.utils import plot_model
+from tensorboard._vendor.bleach import callbacks
 
 
 def build_model(datasize=36):
     # datasize = DATASIZE
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
-    k_l= 10#1
-    k_h= 4#3
-    p_l= 3#1
-    p_h= 4#3
 
     model = Sequential()
-    model.add(Conv2D(32, kernel_size=(k_h, k_l),padding='same', input_shape=(datasize, 4, 1), activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(p_h, p_l), strides=(1, 1),padding='same'))
-    model.add(Conv2D(64, kernel_size=(k_h, k_l),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(p_h, p_l), strides=(1, 1), padding='same'))
-    model.add(Conv2D(64, kernel_size=(k_h, k_l),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(MaxPool2D(pool_size=(p_h, p_l), strides=(1, 1), padding='same'))
+    model.add(Conv2D(32, (3, 1), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+                     kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
+    model.add(Conv2D(16, (5, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+                     kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
+    model.add(Conv2D(16, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+                     kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
+    # model.add(Conv2D(256, (5, 4),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
+    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
+    # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(128, (5, 2),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -34,30 +37,21 @@ def build_model(datasize=36):
     model.add(Flatten())
 
     model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.3))
+    model.add(Dropout(0.3))
     model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.5))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(2, activation='sigmoid'))
+    model.add(Dropout(0.5))
+    model.add(Dense(5, activation='sigmoid'))
     # model.add(Activation('softmax'))
-
-    # myoptimizer = RMSprop(lr=0.1, rho=0.9, epsilon=1e-06)
-    model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
-
-    # adam = Adam(lr=0.0001, beta_1=0.95, beta_2=0.999, epsilon=1e-8)
-    # model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
-    # model.compile(loss='mse', optimizer=adam, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model
 
 
 
 def train(model, X_train, Y_train):
-    # data_code = 'DATACODE'
-    # topdir = 'TOPDIR'
-    # model_arch = 'MODEL_ARCH'
-    model.fit(X_train, Y_train, batch_size=512, epochs=50, validation_split=0.2, shuffle=True)
-    # model.fit(X_train, Y_train, batch_size=512, epochs=5, validation_split=0.2, shuffle=True)
-    return model
+    tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True, write_grads=True)
+    history = model.fit(X_train, Y_train, batch_size=512, epochs=20, validation_split=0.1, shuffle=True, callbacks=[tbCallBack])
+    return model, history
 
 
 
@@ -91,3 +85,13 @@ def load_entire_model():
 def predict(model, X_test):
     # model = build_model()
     return model.predict(X_test)
+
+
+def visualize_model(model):
+    plot_model(model, to_file='model.png')
+    weights, biases = model.layers[0].get_weights()
+    # print(weights.shape)
+    # import os
+    # for i in range(128):
+    #     fname = 'filters/filter'+str(i) + '.csv'
+    #     np.savetxt(fname, weights[:, :, 0, i], fmt='%.3f', newline=os.linesep)
