@@ -12,7 +12,7 @@ from keras.models import Sequential, Input, Model
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Dropout, Activation, concatenate
 from keras.initializers import normal
 from keras.layers.normalization import BatchNormalization
-from metrics import *
+# from metrics import *
 
 
 
@@ -77,20 +77,22 @@ def build_model(datasize=36):
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
 
     model = Sequential()
-    model.add(Conv2D(64, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(256, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(64, (4, 6), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(256, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(64, (4, 9), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(256, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(256, (5, 4),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    model.add(Conv2D(256, (4, 3),padding='same',input_shape=(datasize, 4, 1), activation='relu',
+                     kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(BatchNormalization())
+    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(128, (5, 2),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -109,10 +111,10 @@ def build_model(datasize=36):
     model.add(BatchNormalization())
     # model.add(Activation('softmax'))
     adam1 = adam(lr=0.001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-    model.compile(loss='binary_crossentropy',
-                  optimizer=adam1,
-                  metrics=['binary_accuracy', 'fmeasure', 'precision', 'recall'])
-    # model.compile(loss='mse', optimizer=adam1, metrics=['accuracy'])
+    # model.compile(loss='binary_crossentropy',
+    #               optimizer=adam1,
+    #               metrics=['binary_accuracy', 'fmeasure', 'precision', 'recall'])
+    model.compile(loss='mse', optimizer=adam1, metrics=['accuracy'])
     # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model
