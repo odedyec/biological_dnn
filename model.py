@@ -108,7 +108,10 @@ def build_model(datasize=36):
     model.add(BatchNormalization())
     # model.add(Activation('softmax'))
     adam1 = adam(lr=0.001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-    model.compile(loss='mse', optimizer=adam1, metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',
+                  optimizer=adam1,
+                  metrics=['binary_accuracy', 'fmeasure', 'precision', 'recall'])
+    # model.compile(loss='mse', optimizer=adam1, metrics=['accuracy'])
     # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model
