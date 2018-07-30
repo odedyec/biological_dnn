@@ -154,7 +154,7 @@ def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10, S
 		selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
-		print('selex_data ', selex_data)
+		print('selex_data ', selex_data[0][0, :, :, 0])
 
 		x_train, x_test, y_train, y_test = split_train_test(selex_data, train_size, test_size)
 		save_dataset(x_train, x_test, y_train, y_test)
