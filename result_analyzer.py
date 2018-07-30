@@ -6,6 +6,9 @@ from model import *
 import os
 
 
+def my_pbm_aupr():
+    pass
+
 def predict_on_pbm(model, pbm_dat):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
     print (pbm_dat.shape)
@@ -30,12 +33,10 @@ def predict_on_pbm(model, pbm_dat):
 
 
 def predict_and_calculate_aupr(model, x_test, y_test):
-    p1 = predict(model, x_test[0:10000, :, :, :])
-    p2 = predict(model, x_test[-10000:-1, :, :, :])
-    y_score = np.concatenate((p1[:, 1] - p1[:, 0], p2[:, 1] - p2[:, 0]))
-    # y_score = np.concatenate((np.argmax(p1, axis=1), np.argmax(p2, axis=1)))
-    y_test = np.concatenate((np.argmax(y_test[0:10000, :], axis=1), np.argmax(y_test[-10000:-1, :], axis=1)))
-    np.savetxt('y_score.csv', y_score, fmt='%.3f', newline=os.linesep)
+    p1 = predict(model, x_test)
+
+
+    np.savetxt('y_score.csv', p1, fmt='%.3f', newline=os.linesep)
     np.savetxt('y_testsss.csv', y_test, fmt='%.3f', newline=os.linesep)
     # y_score = np.zeros(y_test.shape)
     # for i in xrange(len(idx)):
