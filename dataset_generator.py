@@ -138,7 +138,7 @@ def load_dataset():
 	return x_train, x_test, y_train, y_test
 
 
-def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=100000, SELEX_SIZE=36, test_size=100000):
+def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10, SELEX_SIZE=36, test_size=10):
 	pbm_data = pbm_dataset_generator(PBM_FILE)
 	if GENERATE_DATASET:  # load data and OneHot encode data
 		print(pbm_data.shape)
@@ -154,6 +154,7 @@ def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10000
 		selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
+		print('selex_data ', selex_data)
 
 		x_train, x_test, y_train, y_test = split_train_test(selex_data, train_size, test_size)
 		save_dataset(x_train, x_test, y_train, y_test)
