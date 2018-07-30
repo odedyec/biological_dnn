@@ -86,7 +86,7 @@ def pbm_dataset_generator(filename):
 	return arr
 
 
-def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE):
+def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_size=36):
 	"""
 	Open a selex file and transform it to two numpy lists.
 	One for the onehot encoded DNA sequence
@@ -109,10 +109,16 @@ def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE):
 		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
 		# 	continue
 		# print encoded_line.shape
-		padding = int((36 - len(encoded_line)) / 2)
-		encoded_line = np.concatenate((np.concatenate((0 * np.ones((padding, 4)), encoded_line)), 0 * np.ones((padding, 4))))
-		# encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
+		padding = int((selex_size - len(encoded_line)) / 2)
+		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
 		data.append(encoded_line)
+		encoded_line_rev = np.zeros(encoded_line.shape)
+		encoded_line_rev[:, 0] = encoded_line[:, 2]
+		encoded_line_rev[:, 1] = encoded_line[:, 3]
+		encoded_line_rev[:, 2] = encoded_line[:, 0]
+		encoded_line_rev[:, 3] = encoded_line[:, 1]
+		encoded_line_rev = encoded_line_rev[::-1]
+		data.append(encoded_line_rev)
 
 	data = np.asarray(data)
 	print('Took ', time.time() - t, ' seconds to encode data, for ', filename)
@@ -138,15 +144,15 @@ def load_dataset():
 	return x_train, x_test, y_train, y_test
 
 
-def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10, SELEX_SIZE=36, test_size=10):
+def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=100000, SELEX_SIZE=36, test_size=100000):
 	pbm_data = pbm_dataset_generator(PBM_FILE)
 	if GENERATE_DATASET:  # load data and OneHot encode data
 		print(pbm_data.shape)
-		selex_4, _ = selex_dataset_generator(SELEX_FILES[-1], (train_size+test_size)/5+1)
-		selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1)
-		selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1)
-		selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1)
-		selex_0, _ = selex_dataset_generator(SELEX_FILES[0], (train_size+test_size)/5+1)
+		selex_4, _ = selex_dataset_generator(SELEX_FILES[-1], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_0, _ = selex_dataset_generator(SELEX_FILES[0], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
 
 		selex_data = list()
 		selex_data.append(selex_0.reshape((len(selex_0), SELEX_SIZE, 4, 1)))
@@ -154,9 +160,8 @@ def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10, S
 		selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
-		print('selex_data ', selex_data[0][0, :, :, 0])
 
-		x_train, x_test, y_train, y_test = split_train_test(selex_data, train_size, test_size)
+		x_train, x_test, y_train, y_test = split_train_test(selex_data, 2*train_size, 2*test_size)
 		save_dataset(x_train, x_test, y_train, y_test)
 	else:  # Load from data_tf1.hdf5 file
 		t = time.time()

@@ -15,15 +15,14 @@ LOAD_ENTIRE_MODEL = False
 
 
 def main(PBM_FILE, SELEX_FILES):
-    x_train, x_test, y_train, y_test, pbm_data = generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET, TRAIN_SIZE, SELEX_SIZE)
-
+    x_train, x_test, y_train, y_test, pbm_data = generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET, train_size=TRAIN_SIZE, SELEX_SIZE=SELEX_SIZE, test_size=TEST_SIZE)
     x_train, y_train = suffle_data_label(x_train, y_train)
     x_test, y_test = suffle_data_label(x_test, y_test)
     print("Train size", x_train.shape, y_train.shape)
     print("Test size", x_test.shape, y_test.shape)
-    # np.savetxt('x_test.csv', x_test, fmt='%.3f', newline=os.linesep)
+    np.savetxt('x_test.csv', x_test[0, :, :, 0], fmt='%.3f', newline=os.linesep)
     np.savetxt('y_test.csv', y_test, fmt='%.3f', newline=os.linesep)
-    # np.savetxt('x_train.csv', x_train, fmt='%.3f', newline=os.linesep)
+    np.savetxt('x_train.csv', x_train[0, :, :, 0], fmt='%.3f', newline=os.linesep)
     np.savetxt('y_train.csv', y_train, fmt='%.3f', newline=os.linesep)
     """ Setup model """
     model = None
@@ -40,7 +39,7 @@ def main(PBM_FILE, SELEX_FILES):
         else:      # Load network from file
             model = load_model(model)
         print("===============================")
-    visualize_model(model)
+    # visualize_model(model)
     predict_and_calculate_aupr(model, x_test, y_test)
     predict_on_pbm(model, pbm_data)
 
