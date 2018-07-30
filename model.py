@@ -101,7 +101,7 @@ def build_model(datasize=36):
     # model.add(Dropout(0.5))
     model.add(Dense(5, activation='sigmoid'))
     # model.add(Activation('softmax'))
-    adam1 = keras.optimizers.Adam(lr=0.001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    adam1 = adam(lr=0.001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     model.compile(loss='mse', optimizer=adam1, metrics=['accuracy'])
     # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
