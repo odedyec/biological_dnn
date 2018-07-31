@@ -110,8 +110,8 @@ def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_s
 		# 	continue
 		# print encoded_line.shape
 		padding = int((selex_size - len(encoded_line)) / 2)
-		# encoded_line = np.concatenate((np.concatenate((0 * np.ones((padding, 4)), encoded_line)), 0 * np.ones((padding, 4))))
-		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
+		encoded_line = np.concatenate((np.concatenate((0 * np.ones((padding, 4)), encoded_line)), 0 * np.ones((padding, 4))))
+		# encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
 		data.append(encoded_line)
 		encoded_line_rev = np.zeros(encoded_line.shape)
 		encoded_line_rev[:, 0] = encoded_line[:, 2]
