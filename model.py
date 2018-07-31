@@ -79,7 +79,7 @@ def build_model(datasize=36):
     model = Sequential()
     # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(Conv2D(16, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_regularizer=regularizers.l2(0.01),
                      bias_regularizer=regularizers.l2(0.01),
                      activity_regularizer=regularizers.l1(0.01),
@@ -88,7 +88,7 @@ def build_model(datasize=36):
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(Conv2D(16, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_regularizer=regularizers.l2(0.01),
                      bias_regularizer=regularizers.l2(0.01),
                      activity_regularizer=regularizers.l1(0.01),
@@ -97,7 +97,7 @@ def build_model(datasize=36):
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(Conv2D(16, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_regularizer=regularizers.l2(0.01),
                      bias_regularizer=regularizers.l2(0.01),
                      activity_regularizer=regularizers.l1(0.01),
