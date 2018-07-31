@@ -15,8 +15,7 @@ def predict_on_pbm(model, pbm_dat):
     print ("pbm_dat re-shaped",pbm_dat.shape)
     how_much = len(pbm_dat)
     # res = np.zeros((how_much, 1))
-    res = predict(model, pbm_dat[:, 0:35, :, :])
-    # res = predict(model, pbm_dat[:, 0:36, :, :])
+    res = predict(model, pbm_dat[:, 0:36, :, :])
     # for i in xrange(16):
     #     p = predict(model, pbm_dat[0:how_much, (i+0):(i+20), :, :])
     #     res = res + (p[:, 1]).reshape(how_much, 1)
