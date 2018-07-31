@@ -11,8 +11,8 @@ from keras.utils import plot_model
 from keras.models import Sequential, Input, Model
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Dropout, Activation, concatenate
 from keras.initializers import normal
+from keras.layers.normalization import BatchNormalization
 from keras import regularizers
-
 
 # def build_model(datasize=36):
 #     # datasize = DATASIZE
