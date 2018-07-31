@@ -18,54 +18,27 @@ def build_model(datasize=36):
     # datasize = DATASIZE
     W_maxnorm = 3
     DROPOUT = 0.5  # {{choice([0.3, 0.5, 0.7])}}
-    input_img = Input(shape=(datasize, 4, 1))
-    tower_1 = Conv2D(16, (3, 4), padding='same', activation='relu', kernel_initializer=normal(0, 0.1), bias_initializer=normal(0, 0.1))(input_img)
-    tower_1 = MaxPool2D((3, 4), strides=(1, 1), padding='same')(tower_1)
-    tower_2 = Conv2D(16, (10, 4), padding='same', activation='relu', kernel_initializer=normal(0, 0.1), bias_initializer=normal(0, 0.1))(input_img)
-    tower_2 = MaxPool2D((10, 4), strides=(1, 1), padding='same')(tower_2)
-    tower_3 = Conv2D(16, (5, 4), padding='same', activation='relu', kernel_initializer=normal(0, 0.1), bias_initializer=normal(0, 0.1))(input_img)
-    tower_3 = MaxPool2D((5, 4), strides=(1, 1), padding='same')(tower_3)
-    tower_4 = Conv2D(16, (6, 4), padding='same', activation='relu', kernel_initializer=normal(0, 0.1), bias_initializer=normal(0, 0.1))(input_img)
-    tower_4 = MaxPool2D((6, 4), strides=(1, 1), padding='same')(tower_4)
-    tower_5 = Conv2D(16, (8, 4), padding='same', activation='relu', kernel_initializer=normal(0, 0.1), bias_initializer=normal(0, 0.1))(input_img)
-    tower_5 = MaxPool2D((8, 4), strides=(1, 1), padding='same')(tower_5)
 
-    output = concatenate([tower_1, tower_2, tower_3, tower_4, tower_5], axis=3)
-    output = Conv2D(32, (3, 4), padding='valid', activation='relu', kernel_initializer=normal(0, 0.1), bias_initializer=normal(0, 0.1))(output)
+    input_img = Input(shape=(datasize, 4, 1))
+    tower_1 = Conv2D(32, (3, 4), padding='same', activation='relu')(input_img)
+    tower_1 = MaxPool2D((3, 4), strides=(1, 1), padding='same')(tower_1)
+    # tower_2 = Conv2D(8, (10, 4), padding='same', activation='relu')(input_img)
+    # tower_2 = MaxPool2D((10, 4), strides=(1, 1), padding='same')(tower_2)
+    tower_3 = Conv2D(32, (5, 4), padding='same', activation='relu')(input_img)
+    tower_3 = MaxPool2D((3, 4), strides=(1, 1), padding='same')(tower_3)
+
+    output = concatenate([tower_1, tower_3], axis=3)
+    # output = Conv2D(32, (3, 4), padding='valid', activation='relu')(output)
+    # output = MaxPool2D((3, 1), strides=(1, 1), padding='valid')(output)
+    output = Conv2D(32, (5, 4), padding='valid', activation='relu')(output)
     output = MaxPool2D((3, 1), strides=(1, 1), padding='valid')(output)
-    # output = Conv2D(16, (5, 1), padding='valid', activation='relu')(output)
     output = Flatten()(output)
-    output = Dense(64, activation='relu')(output)
+    output = Dense(32, activation='relu')(output)
     out = Dense(5, activation='softmax')(output)
     model = Model(inputs=input_img, outputs=out)
 
-    # model = Sequential()
-    # model.add(Conv2D(8, (10, 4),padding='same', input_shape=(datasize, 4, 1), activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1),padding='same'))
-    # model.add(Conv2D(16, (5, 4), padding='valid', input_shape=(datasize, 4, 1), activation='relu',
-    #                  kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(256, (5, 4),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(128, (5, 2),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
-
-    # model.add(Flatten())
-
-    # model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.3))
-    # model.add(Dense(64, activation='relu'))
-    # model.add(Dropout(0.5))
-    # model.add(Dense(32, activation='relu'))
-    # model.add(Dense(2, activation='sigmoid'))
-    # model.add(Activation('softmax'))
-
     myoptimizer = RMSprop(lr=0.001, rho=0.9, epsilon=1e-06)
-    model.compile(loss='categorical_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     # model.compile(loss='categorical_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model
 
@@ -75,7 +48,7 @@ def train(model, X_train, Y_train):
     import time
     log_name = './Graph/' + str(time.time())
     tbCallBack = TensorBoard(log_dir=log_name, histogram_freq=1, write_graph=True, write_images=True, write_grads=True)
-    history = model.fit(X_train, Y_train, batch_size=512, epochs=10, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
+    history = model.fit(X_train, Y_train, batch_size=512, epochs=12, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
     return model, history
 
 

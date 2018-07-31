@@ -4,10 +4,30 @@ from sklearn.metrics import precision_recall_curve
 import matplotlib.pyplot as plt
 from model import *
 import os
+import time
 
 
-def my_pbm_aupr():
-    pass
+def my_pbm_aupr(result):
+    cnt = (result < 100).astype(np.int)
+    prec = np.zeros((100, 1), dtype=np.float)
+    recall = np.zeros((100, 1), dtype=np.float)
+    ap = 0
+    for i in range(100):
+        prec[i, 0] = np.sum(cnt[0:i+1]) / (i+1)
+        recall[i, 0] = np.sum(cnt[0:i+1]) / 100
+        if i == 0: continue
+        ap += (recall[i, 0] - recall[i-1, 0]) * prec[i, 0]
+    print('PBM average: '+str(ap))
+    fig1 = plt.figure(101)
+    plt.cla()
+    plt.plot(recall, prec)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision Recall graph\nAUPR = '+str(ap)+'    '+str(np.sum(cnt[0:100]))+'/100')
+    # plt.show()
+    fig1.savefig('aupr_graphs/'+str(time.time())+'.png')
+    plt.cla()
+    return cnt, ap
 
 def predict_on_pbm(model, pbm_dat):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
@@ -22,12 +42,11 @@ def predict_on_pbm(model, pbm_dat):
     idx = np.arange(how_much).reshape(how_much, 1)
     # res2 = np.concatenate((idx, res), axis=1)
     res2 = np.argsort(res[:, 0])
+    cnt, ap = my_pbm_aupr(res2)
     np.savetxt('pbm2.csv', res2, fmt='%.3f', newline=os.linesep)
     num_correct = np.sum(res2[0:100] < 100)
-    f = open('result.txt', 'a')
-    f.write(str(num_correct)+'\n')
-    f.close()
-    print (num_correct)
+    return cnt, ap
+
 
 
 
