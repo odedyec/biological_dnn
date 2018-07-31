@@ -77,22 +77,22 @@ def build_model(datasize=36):
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
 
     model = Sequential()
-    model.add(Conv2D(128, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(32, (4, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(MaxPool2D(pool_size=(4, 4), strides=(1, 1), padding='same'))
+    model.add(Conv2D(32, (4, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(MaxPool2D(pool_size=(4, 4), strides=(1, 1), padding='same'))
+    model.add(Conv2D(32, (4, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (4, 3),padding='same',input_shape=(datasize, 4, 1), activation='relu',
+    model.add(MaxPool2D(pool_size=(4, 4), strides=(1, 1), padding='same'))
+    model.add(Conv2D(32, (4, 4),padding='same',input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
+    model.add(MaxPool2D(pool_size=(4, 4), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(128, (5, 2),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
