@@ -77,19 +77,19 @@ def build_model(datasize=36):
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
 
     model = Sequential()
-    model.add(Conv2D(12, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(64, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(12, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(64, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(12, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(64, (4, 3), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
-    model.add(Conv2D(12, (4, 3),padding='same',input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(64, (4, 3),padding='same',input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(1, 3), strides=(1, 1), padding='same'))
@@ -108,7 +108,7 @@ def build_model(datasize=36):
     model.add(BatchNormalization())
     # model.add(Dropout(0.5))
     model.add(Dense(5, activation='sigmoid'))
-    model.add(BatchNormalization())
+    # model.add(BatchNormalization())
     # model.add(Activation('softmax'))
     adam1 = adam(lr=0.001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     # model.compile(loss='binary_crossentropy',
@@ -124,7 +124,7 @@ def train(model, X_train, Y_train):
     import time
     log_name = './Graph/' + str(time.time())
     tbCallBack = TensorBoard(log_dir=log_name, histogram_freq=1, write_graph=True, write_images=True, write_grads=True)
-    history = model.fit(X_train, Y_train, batch_size=512, epochs=1, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
+    history = model.fit(X_train, Y_train, batch_size=512, epochs=10, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
     return model, history
 
 
