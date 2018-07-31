@@ -7,7 +7,7 @@ from keras.regularizers import *
 from keras.callbacks import TensorBoard
 from keras.constraints import maxnorm
 from keras.utils import plot_model
-from tensorboard._vendor.bleach import callbacks
+# from tensorboard._vendor.bleach import callbacks
 from keras.models import Sequential, Input, Model
 from keras.layers import Dense, Conv2D, MaxPool2D, Flatten, Dropout, Activation, concatenate
 from keras.initializers import normal
