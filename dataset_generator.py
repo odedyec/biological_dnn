@@ -3,8 +3,9 @@ import numpy as np
 import pandas as pd
 import time
 
-TRAIN_SIZE = 100000
-TEST_SIZE = 100000
+TRAIN_SIZE = 30000
+TEST_SIZE = 30000
+
 
 def label_generator(num_of_labels, size):
 	"""
@@ -53,7 +54,6 @@ def split_train_test(selex_data, train_size, test_size):
 	y_test = label_generator(split_size, test_size)
 
 	return x_train, x_test, y_train, y_test
-
 
 
 def oneHot(string):
