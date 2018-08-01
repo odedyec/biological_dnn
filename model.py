@@ -50,7 +50,7 @@ def build_model(datasize=36):
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
     model = Sequential()
-    model.add(Conv2D(128, (9, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(128, (6, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_regularizer=regularizers.l2(0.01),
@@ -58,18 +58,18 @@ def build_model(datasize=36):
     #                  activity_regularizer=regularizers.l1(0.01),
     #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    model.add(MaxPooling2D(pool_size=(6, 4), strides=(1, 1), padding='same'))
+    model.add(Conv2D(128, (6, 4), padding='same', activation='relu',
+                     kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(BatchNormalization())
+    # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    model.add(MaxPooling2D(pool_size=(6, 4), strides=(1, 1), padding='same'))
+    model.add(Conv2D(128, (6, 4), padding='same', activation='relu',
+                     kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(BatchNormalization())
+    # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (9, 4), padding='same', activation='relu',
-                     kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (9, 4), padding='same', activation='relu',
-                     kernel_constraint=maxnorm(W_maxnorm)))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4),padding='same', activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
 
