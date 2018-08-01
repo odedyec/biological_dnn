@@ -90,7 +90,7 @@ def build_model(datasize=36):
     model.add(Dense(5, activation='sigmoid'))
     model.add(BatchNormalization())
     # model.add(Activation('softmax'))
-    adam1 = adam(lr=0.0001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    adam1 = adam(lr=0.00001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     # model.compile(loss='binary_crossentropy',
     #               optimizer=adam1,
     #               metrics=['binary_accuracy', 'fmeasure', 'precision', 'recall'])
@@ -104,7 +104,7 @@ def train(model, X_train, Y_train):
     import time
     log_name = './Graph/' + str(time.time())
     tbCallBack = TensorBoard(log_dir=log_name, histogram_freq=1, write_graph=True, write_images=True, write_grads=True)
-    history = model.fit(X_train, Y_train, batch_size=512, epochs=15, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
+    history = model.fit(X_train, Y_train, batch_size=10, epochs=50, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
     return model, history
 
 
