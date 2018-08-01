@@ -8,7 +8,7 @@ from keras.constraints import maxnorm
 from keras.utils import plot_model
 # from tensorboard._vendor.bleach import callbacks
 from keras.models import Sequential, Input, Model
-from keras.layers import Dense, Conv2D, Flatten, Dropout, Activation, concatenate, MaxPooling2D, AveragePooling2D
+from keras.layers import Dense, Conv2D, Flatten, Dropout, concatenate, MaxPooling2D, AveragePooling2D
 from keras.initializers import normal
 from keras.layers.normalization import BatchNormalization
 # from keras import regularizers
@@ -50,25 +50,27 @@ def build_model(datasize=36):
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
     model = Sequential()
-    model.add(Conv2D(128, (9, 4), padding='same', input_shape=(datasize, 4, 1), Activation='relu',
+    model.add(Conv2D(128, (9, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), Activation='relu',
+    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_regularizer=regularizers.l2(0.01),
     #                  bias_regularizer=regularizers.l2(0.01),
     #                  activity_regularizer=regularizers.l1(0.01),
     #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (9, 4), padding='same', Activation='relu',
+    model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    # model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    model.add(Conv2D(128, (9, 4), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(128, (9, 4), padding='same', Activation='relu',
+    model.add(Conv2D(128, (9, 4), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(32, (3, 4),padding='same', Activation='relu',
+    # model.add(Conv2D(32, (3, 4),padding='same', activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
 
     # model.add(BatchNormalization())
@@ -84,12 +86,12 @@ def build_model(datasize=36):
 
     # model.add(Dense(64, activation='relu'))
     # model.add(Dropout(0.3))
-    model.add(Dense(64, Activation='relu'))
+    model.add(Dense(64, activation='relu'))
     model.add(BatchNormalization())
     # model.add(Dropout(0.5))
-    model.add(Dense(5, Activation='sigmoid'))
+    model.add(Dense(5, activation='sigmoid'))
     model.add(BatchNormalization())
-    # model.add(Activation('softmax'))
+    # model.add(activation('softmax'))
     adam1 = adam(lr=0.0001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     # model.compile(loss='binary_crossentropy',
     #               optimizer=adam1,
