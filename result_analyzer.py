@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from model import *
 import os
 import time
+np.random.seed(1337) # for reproducibility
 
 
 def my_pbm_aupr(result):

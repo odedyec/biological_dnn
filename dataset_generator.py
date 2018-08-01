@@ -3,8 +3,9 @@ import numpy as np
 import pandas as pd
 import time
 
-TRAIN_SIZE = 30000
-TEST_SIZE = 30000
+TRAIN_SIZE = 60000  #30000
+TEST_SIZE = 60000  #30000
+np.random.seed(1337) # for reproducibility
 
 
 def label_generator(num_of_labels, size):

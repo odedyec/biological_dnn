@@ -14,6 +14,9 @@ from keras.initializers import normal
 from keras.layers.normalization import BatchNormalization
 from keras import regularizers
 
+np.random.seed(1337) # for reproducibility
+
+
 # def build_model(datasize=36):
 #     # datasize = DATASIZE
 #     W_maxnorm = 3
@@ -48,31 +51,31 @@ def build_model(datasize=36):
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
     model = Sequential()
-    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-                     kernel_regularizer=regularizers.l2(0.01),
-                     bias_regularizer=regularizers.l2(0.01),
-                     activity_regularizer=regularizers.l1(0.01),
                      kernel_constraint=maxnorm(W_maxnorm)))
+    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    #                  kernel_regularizer=regularizers.l2(0.01),
+    #                  bias_regularizer=regularizers.l2(0.01),
+    #                  activity_regularizer=regularizers.l1(0.01),
+    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-                     kernel_regularizer=regularizers.l2(0.01),
-                     bias_regularizer=regularizers.l2(0.01),
-                     activity_regularizer=regularizers.l1(0.01),
                      kernel_constraint=maxnorm(W_maxnorm)))
+    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    #                  kernel_regularizer=regularizers.l2(0.01),
+    #                  bias_regularizer=regularizers.l2(0.01),
+    #                  activity_regularizer=regularizers.l1(0.01),
+    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-                     kernel_regularizer=regularizers.l2(0.01),
-                     bias_regularizer=regularizers.l2(0.01),
-                     activity_regularizer=regularizers.l1(0.01),
                      kernel_constraint=maxnorm(W_maxnorm)))
+    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    #                  kernel_regularizer=regularizers.l2(0.01),
+    #                  bias_regularizer=regularizers.l2(0.01),
+    #                  activity_regularizer=regularizers.l1(0.01),
+    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4),padding='same',input_shape=(datasize, 4, 1), activation='relu',
@@ -95,11 +98,11 @@ def build_model(datasize=36):
 
     # model.add(Dense(64, activation='relu'))
     # model.add(Dropout(0.3))
-    # model.add(Dense(64, activation='relu'))
-    model.add(Dense(32, kernel_regularizer=regularizers.l2(0.01),
-                    bias_regularizer=regularizers.l2(0.01),
-                    activity_regularizer=regularizers.l1(0.01),
-                    activation='relu'))
+    model.add(Dense(64, activation='relu'))
+    # model.add(Dense(32, kernel_regularizer=regularizers.l2(0.01),
+    #                 bias_regularizer=regularizers.l2(0.01),
+    #                 activity_regularizer=regularizers.l1(0.01),
+    #                 activation='relu'))
     model.add(BatchNormalization())
     # model.add(Dropout(0.5))
     model.add(Dense(5, activation='sigmoid'))
