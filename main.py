@@ -50,7 +50,7 @@ def loop_over_all():
     import os.path
     import time
     wSave = model.get_weights()
-    for i in range(1, 124):
+    for i in range(18, 124):
         pbm_file_name = 'train/TF%d_pbm.txt'%(i)
         selex_list = []
         for j in range(7):
@@ -60,21 +60,25 @@ def loop_over_all():
             selex_list.append(selex_file_name)
         t = time.time()
         model.set_weights(wSave)
-        cnt, ap = main(pbm_file_name, selex_list)
+        try:
+            cnt, ap = main(pbm_file_name, selex_list)
+        except:
+            print("Fail at TF{}".format(i))
+            continue
         f = open('result.csv', 'a')
-        f.write(str(time.time() - t) + ', ' + str(sum(cnt[0:100])) + ',' + str(ap) + '\n')
+        f.write(str(time.time() - t) + ',' + str(sum(cnt[0:100])) + ',' + str(ap) + '\n')
         f.close()
 
 
 
 if __name__ == '__main__':
-    loop_over_all()
-    # PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]  # get_argv()
+    # loop_over_all()
+    PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]  # get_argv()
     # print(PBM_FILE)
     # print(SELEX_FILES)
     # # PBM_FILE, SELEX_FILES =
-    # PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
+    PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
     # print(PBM_FILE)
     # print(SELEX_FILES)
-    # main(PBM_FILE, SELEX_FILES)
+    main(PBM_FILE, SELEX_FILES)
 

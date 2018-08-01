@@ -17,7 +17,7 @@ def my_pbm_aupr(result):
         recall[i, 0] = np.sum(cnt[0:i+1]) / 100
         if i == 0: continue
         ap += (recall[i, 0] - recall[i-1, 0]) * prec[i, 0]
-    print('PBM average: '+str(ap))
+    print('PBM average: '+str(ap)+'  '+str(np.sum(cnt[0:100]))+'/100')
     fig1 = plt.figure(101)
     plt.cla()
     plt.plot(recall, prec)
