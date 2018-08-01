@@ -104,7 +104,7 @@ def train(model, X_train, Y_train):
     import time
     log_name = './Graph/' + str(time.time())
     tbCallBack = TensorBoard(log_dir=log_name, histogram_freq=1, write_graph=True, write_images=True, write_grads=True)
-    history = model.fit(X_train, Y_train, batch_size=10, epochs=50, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
+    history = model.fit(X_train, Y_train, batch_size=10, epochs=35, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
     return model, history
 
 
