@@ -51,7 +51,7 @@ def build_model(datasize=36):
     W_maxnorm = 3
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
     model = Sequential()
-    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(64, (10, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_regularizer=regularizers.l2(0.01),
@@ -60,31 +60,17 @@ def build_model(datasize=36):
     #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(64, (10, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-    #                  kernel_regularizer=regularizers.l2(0.01),
-    #                  bias_regularizer=regularizers.l2(0.01),
-    #                  activity_regularizer=regularizers.l1(0.01),
-    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    model.add(Conv2D(64, (10, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-    #                  kernel_regularizer=regularizers.l2(0.01),
-    #                  bias_regularizer=regularizers.l2(0.01),
-    #                  activity_regularizer=regularizers.l1(0.01),
-    #                  kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
+    # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4),padding='same',input_shape=(datasize, 4, 1), activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
-    # # model.add(Conv2D(16, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
-    # #                  kernel_regularizer=regularizers.l2(0.01),
-    # #                  bias_regularizer=regularizers.l2(0.01),
-    # #                  activity_regularizer=regularizers.l1(0.01),
-    # #                  kernel_constraint=maxnorm(W_maxnorm)))
+
     # model.add(BatchNormalization())
     # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -99,16 +85,12 @@ def build_model(datasize=36):
     # model.add(Dense(64, activation='relu'))
     # model.add(Dropout(0.3))
     model.add(Dense(64, activation='relu'))
-    # model.add(Dense(32, kernel_regularizer=regularizers.l2(0.01),
-    #                 bias_regularizer=regularizers.l2(0.01),
-    #                 activity_regularizer=regularizers.l1(0.01),
-    #                 activation='relu'))
     model.add(BatchNormalization())
     # model.add(Dropout(0.5))
     model.add(Dense(5, activation='sigmoid'))
     model.add(BatchNormalization())
     # model.add(Activation('softmax'))
-    adam1 = adam(lr=0.01)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    adam1 = adam(lr=0.0001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     # model.compile(loss='binary_crossentropy',
     #               optimizer=adam1,
     #               metrics=['binary_accuracy', 'fmeasure', 'precision', 'recall'])
