@@ -60,12 +60,12 @@ def build_model(datasize=36):
     model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(6, 4), strides=(1, 1), padding='same'))
-    model.add(Conv2D(512, (6, 4), padding='same', activation='relu',
+    model.add(Conv2D(2, (6, 4), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(6, 4), strides=(1, 1), padding='same'))
-    model.add(Conv2D(512, (6, 4), padding='same', activation='relu',
+    model.add(Conv2D(2, (6, 4), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
