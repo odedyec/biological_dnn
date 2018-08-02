@@ -57,17 +57,17 @@ def build_model(datasize=36):
     #                  bias_regularizer=regularizers.l2(0.01),
     #                  activity_regularizer=regularizers.l1(0.01),
     #                  kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(6, 4), strides=(1, 1), padding='same'))
     model.add(Conv2D(128, (6, 4), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(6, 4), strides=(1, 1), padding='same'))
     model.add(Conv2D(128, (6, 4), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4),padding='same', activation='relu',
@@ -106,7 +106,7 @@ def train(model, X_train, Y_train):
     import time
     log_name = './Graph/' + str(time.time())
     tbCallBack = TensorBoard(log_dir=log_name, histogram_freq=1, write_graph=True, write_images=True, write_grads=True)
-    history = model.fit(X_train, Y_train, batch_size=512, epochs=35, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
+    history = model.fit(X_train, Y_train, batch_size=512, epochs=20, validation_split=0.2, shuffle=True, callbacks=[tbCallBack])
     return model, history
 
 
