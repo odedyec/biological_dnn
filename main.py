@@ -50,7 +50,7 @@ def loop_over_all():
     import os.path
     import time
     wSave = model.get_weights()
-    for i in range(1, 2): #124):
+    for i in range(3, 4): #124):
         pbm_file_name = 'train/TF%d_pbm.txt'%(i)
         selex_list = []
         for j in range(7):
