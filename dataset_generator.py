@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import time
 
-TRAIN_SIZE = 60000  #30000
-TEST_SIZE = 60000  #30000
+TRAIN_SIZE = 10000  #30000
+TEST_SIZE = 10000  #30000
 np.random.seed(1337) # for reproducibility
 
 
@@ -146,7 +146,7 @@ def load_dataset():
 	return x_train, x_test, y_train, y_test
 
 
-def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=100000, SELEX_SIZE=36, test_size=100000):
+def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10000, SELEX_SIZE=36, test_size=10000):
 	pbm_data = pbm_dataset_generator(PBM_FILE)
 	if GENERATE_DATASET:  # load data and OneHot encode data
 		print(pbm_data.shape)
