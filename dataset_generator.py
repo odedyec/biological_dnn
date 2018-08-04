@@ -43,7 +43,8 @@ def split_train_test(selex_data, train_size, test_size):
 	x_train = np.array([])
 	x_test = np.array([])
 	for selex in selex_data:
-		np.random.shuffle(selex)
+		# np.random.shuffle(selex)
+		print("train_size,test_size, split_size,int(train_size/split_size): ",train_size,test_size, split_size, int(train_size/split_size))
 		if len(x_test) == 0:
 			x_train = selex[0:int(train_size/split_size), :, :, :]
 			x_test = selex[int(train_size / split_size)+1:int(train_size / split_size)+1+int(test_size/split_size), :, :, :]
