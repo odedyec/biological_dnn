@@ -115,11 +115,16 @@ def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_s
 		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
 		data.append(encoded_line)
 		encoded_line_rev = np.zeros(encoded_line.shape)
-		encoded_line_rev[:, 0] = encoded_line[:, 2]
-		encoded_line_rev[:, 1] = encoded_line[:, 3]
-		encoded_line_rev[:, 2] = encoded_line[:, 0]
-		encoded_line_rev[:, 3] = encoded_line[:, 1]
+		encoded_line_rev[:, 0] = encoded_line[:, 3]
+		encoded_line_rev[:, 1] = encoded_line[:, 2]
+		encoded_line_rev[:, 2] = encoded_line[:, 1]
+		encoded_line_rev[:, 3] = encoded_line[:, 0]
 		encoded_line_rev = encoded_line_rev[::-1]
+		# encoded_line_rev[:, 0] = encoded_line[:, 2]
+		# encoded_line_rev[:, 1] = encoded_line[:, 3]
+		# encoded_line_rev[:, 2] = encoded_line[:, 0]
+		# encoded_line_rev[:, 3] = encoded_line[:, 1]
+		# encoded_line_rev = encoded_line_rev[::-1]
 		data.append(encoded_line_rev)
 
 	data = np.asarray(data)
