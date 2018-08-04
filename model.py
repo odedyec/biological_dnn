@@ -57,23 +57,23 @@ def build_model(datasize=36):
     #                  bias_regularizer=regularizers.l2(0.01),
     #                  activity_regularizer=regularizers.l1(0.01),
     #                  kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(Conv2D(256, (6, 1), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(Conv2D(256, (9, 1), padding='same', activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(AveragePooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(MaxPooling2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(32, (3, 4),padding='same', activation='relu',
     #                  kernel_constraint=maxnorm(W_maxnorm)))
 
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     # model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
@@ -85,12 +85,13 @@ def build_model(datasize=36):
     model.add(Flatten())
 
     model.add(Dense(64, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dropout(0.3))
     model.add(Dense(64, activation='relu'))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     model.add(Dropout(0.3))
     model.add(Dense(5, activation='sigmoid'))
-    # model.add(BatchNormalization())
+    model.add(BatchNormalization())
     # model.add(activation('softmax'))
     adam1 = adam(lr=0.0001)  #, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     # model.compile(loss='binary_crossentropy',
