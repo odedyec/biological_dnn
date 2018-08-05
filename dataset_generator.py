@@ -3,10 +3,8 @@ import numpy as np
 import pandas as pd
 import time
 
-TRAIN_SIZE = 10000  #30000
-TEST_SIZE = 10000  #30000
-np.random.seed(1337) # for reproducibility
-
+TRAIN_SIZE = 30000
+TEST_SIZE = 2
 
 def label_generator(num_of_labels, size):
 	"""
@@ -43,8 +41,7 @@ def split_train_test(selex_data, train_size, test_size):
 	x_train = np.array([])
 	x_test = np.array([])
 	for selex in selex_data:
-		# np.random.shuffle(selex)
-		print("train_size,test_size, split_size,int(train_size/split_size): ",train_size,test_size, split_size, int(train_size/split_size))
+		np.random.shuffle(selex)
 		if len(x_test) == 0:
 			x_train = selex[0:int(train_size/split_size), :, :, :]
 			x_test = selex[int(train_size / split_size)+1:int(train_size / split_size)+1+int(test_size/split_size), :, :, :]
@@ -56,6 +53,7 @@ def split_train_test(selex_data, train_size, test_size):
 	y_test = label_generator(split_size, test_size)
 
 	return x_train, x_test, y_train, y_test
+
 
 
 def oneHot(string):
@@ -96,36 +94,29 @@ def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_s
 	:param filename:
 	:return:
 	"""
-
-	dat = pd.read_csv(filename, delimiter='\t', usecols=[0], header=-1)
-	f = dat.get(0)
-	data = []
-	k = 0;
 	t = time.time()
-	for line2 in f:
-		if k == data_to_load:
-			break
-		k += 1
-		encoded_line = oneHot(line2)
+	f = open(filename, 'r')  # pd.read_csv(filename, delimiter='\t', usecols=[0], header=-1)
+	dat = f.read().split()[0::2]
+	data = []
+	n = len(dat)
+	idx = np.arange(n)
+	# np.random.shuffle(idx)
+
+	for i in range(data_to_load):
+		encoded_line = oneHot(dat[idx[i]])
 		# if (encoded_line.shape != (20, 4)):
 		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
 		# 	continue
 		# print encoded_line.shape
 		padding = int((selex_size - len(encoded_line)) / 2)
-		# encoded_line = np.concatenate((np.concatenate((0 * np.ones((padding, 4)), encoded_line)), 0 * np.ones((padding, 4))))
 		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
 		data.append(encoded_line)
 		encoded_line_rev = np.zeros(encoded_line.shape)
-		encoded_line_rev[:, 0] = encoded_line[:, 3]
-		encoded_line_rev[:, 1] = encoded_line[:, 2]
-		encoded_line_rev[:, 2] = encoded_line[:, 1]
-		encoded_line_rev[:, 3] = encoded_line[:, 0]
+		encoded_line_rev[:, 0] = encoded_line[:, 2]
+		encoded_line_rev[:, 1] = encoded_line[:, 3]
+		encoded_line_rev[:, 2] = encoded_line[:, 0]
+		encoded_line_rev[:, 3] = encoded_line[:, 1]
 		encoded_line_rev = encoded_line_rev[::-1]
-		# encoded_line_rev[:, 0] = encoded_line[:, 2]
-		# encoded_line_rev[:, 1] = encoded_line[:, 3]
-		# encoded_line_rev[:, 2] = encoded_line[:, 0]
-		# encoded_line_rev[:, 3] = encoded_line[:, 1]
-		# encoded_line_rev = encoded_line_rev[::-1]
 		data.append(encoded_line_rev)
 
 	data = np.asarray(data)
@@ -152,21 +143,21 @@ def load_dataset():
 	return x_train, x_test, y_train, y_test
 
 
-def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10000, SELEX_SIZE=36, test_size=10000):
+def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=100000, SELEX_SIZE=36, test_size=100000):
 	pbm_data = pbm_dataset_generator(PBM_FILE)
 	if GENERATE_DATASET:  # load data and OneHot encode data
 		print(pbm_data.shape)
-		selex_4, _ = selex_dataset_generator(SELEX_FILES[-1], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
-		selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
-		selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
-		selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
-		selex_0, _ = selex_dataset_generator(SELEX_FILES[0], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_4, _ = selex_dataset_generator(SELEX_FILES[-1], int((train_size+test_size)/2+1), selex_size=SELEX_SIZE)
+		# selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		# selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		# selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_0, _ = selex_dataset_generator(SELEX_FILES[0], int((train_size+test_size)/2+1), selex_size=SELEX_SIZE)
 
 		selex_data = list()
 		selex_data.append(selex_0.reshape((len(selex_0), SELEX_SIZE, 4, 1)))
-		selex_data.append(selex_1.reshape((len(selex_1), SELEX_SIZE, 4, 1)))
-		selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
-		selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
+		# selex_data.append(selex_1.reshape((len(selex_1), SELEX_SIZE, 4, 1)))
+		# selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
+		# selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
 
 		x_train, x_test, y_train, y_test = split_train_test(selex_data, 2*train_size, 2*test_size)

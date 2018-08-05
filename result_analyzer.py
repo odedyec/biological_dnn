@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from model import *
 import os
 import time
-np.random.seed(1337) # for reproducibility
-
+true=[int(x) for x in np.append(np.ones(100), np.zeros(len(test)-100), axis=0)]
+print(average_precision_score(true, predict))
 
 def my_pbm_aupr(result):
     cnt = (result < 100).astype(np.int)
@@ -18,7 +18,7 @@ def my_pbm_aupr(result):
         recall[i, 0] = np.sum(cnt[0:i+1]) / 100
         if i == 0: continue
         ap += (recall[i, 0] - recall[i-1, 0]) * prec[i, 0]
-    print('PBM average: '+str(ap))
+    print('PBM average: '+str(ap)+'  '+str(np.sum(cnt[0:100]))+'/100')
     fig1 = plt.figure(101)
     plt.cla()
     plt.plot(recall, prec)
@@ -49,35 +49,39 @@ def predict_on_pbm(model, pbm_dat):
     return cnt, ap
 
 
-def predict_and_calculate_aupr(model, x_test, y_test):
-    p1 = predict(model, x_test)
 
-    np.savetxt('y_score.csv', p1, fmt='%.3f', newline=os.linesep)
+
+
+def predict_and_calculate_aupr(model, x_test, y_test):
+    y_score = predict(model, x_test)
+
+
+    np.savetxt('y_score.csv', y_score, fmt='%.3f', newline=os.linesep)
     np.savetxt('y_testsss.csv', y_test, fmt='%.3f', newline=os.linesep)
     # y_score = np.zeros(y_test.shape)
     # for i in xrange(len(idx)):
     #     y_score[i, idx[i]] = 1
 
-    # average_precision = average_precision_score(y_test, y_score)
+    average_precision = average_precision_score(y_test, y_score)
 
-    # print('Average precision-recall score: {0:0.2f}'.format(
-    #     average_precision))
+    print('Average precision-recall score: {0:0.2f}'.format(
+        average_precision))
 
 
-    # precision, recall, _ = precision_recall_curve(y_test, y_score)
-    # fig = plt.figure(3)
-    # plt.step(recall, precision, color='b', alpha=0.2,
-    #          where='post')
-    # plt.fill_between(recall, precision, step='post', alpha=0.2,
-    #                  color='b')
-    #
-    # plt.xlabel('Recall')
-    # plt.ylabel('Precision')
-    # plt.ylim([0.0, 1.05])
-    # plt.xlim([0.0, 1.0])
-    # plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
-    #     average_precision))
-    # fig.savefig('aupr_selex.png')
+    precision, recall, _ = precision_recall_curve(y_test[:,1]-y_test[:,0], y_score[:,1]-y_score[:,0])
+    fig = plt.figure(3)
+    plt.step(recall, precision, color='b', alpha=0.2,
+             where='post')
+    plt.fill_between(recall, precision, step='post', alpha=0.2,
+                     color='b')
+
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
+        average_precision))
+    fig.savefig('aupr_selex.png')
     # plt.show()
 
 
