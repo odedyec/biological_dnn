@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import time
 
-TRAIN_SIZE = 30000
-TEST_SIZE = 2
+TRAIN_SIZE = 60000
+TEST_SIZE = 20000
 
 def label_generator(num_of_labels, size):
 	"""
@@ -102,7 +102,7 @@ def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_s
 	idx = np.arange(n)
 	# np.random.shuffle(idx)
 
-	for i in range(data_to_load):
+	for i in range(int(data_to_load)):
 		encoded_line = oneHot(dat[idx[i]])
 		# if (encoded_line.shape != (20, 4)):
 		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
@@ -148,16 +148,16 @@ def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10000
 	if GENERATE_DATASET:  # load data and OneHot encode data
 		print(pbm_data.shape)
 		selex_4, _ = selex_dataset_generator(SELEX_FILES[-1], int((train_size+test_size)/2+1), selex_size=SELEX_SIZE)
-		# selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
-		# selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
-		# selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
 		selex_0, _ = selex_dataset_generator(SELEX_FILES[0], int((train_size+test_size)/2+1), selex_size=SELEX_SIZE)
 
 		selex_data = list()
 		selex_data.append(selex_0.reshape((len(selex_0), SELEX_SIZE, 4, 1)))
-		# selex_data.append(selex_1.reshape((len(selex_1), SELEX_SIZE, 4, 1)))
-		# selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
-		# selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
+		selex_data.append(selex_1.reshape((len(selex_1), SELEX_SIZE, 4, 1)))
+		selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
+		selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
 
 		x_train, x_test, y_train, y_test = split_train_test(selex_data, train_size, test_size)

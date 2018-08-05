@@ -66,6 +66,7 @@ def predict_and_calculate_aupr(model, x_test, y_test):
     print('Average precision-recall score: {0:0.2f}'.format(
         average_precision))
 
+    if len(x_test[0]) > 2: return
 
     precision, recall, _ = precision_recall_curve(y_test[:,1]-y_test[:,0], y_score[:,1]-y_score[:,0])
     fig = plt.figure(3)
