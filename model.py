@@ -38,7 +38,7 @@ def build_model(datasize=36):
     # model.add(Dense(5, activation='relu'))
     # model.add(Dropout(0.5))
     model.add(Dense(2, activation='sigmoid'))
-    model.add(Activation('softmax'))
+    # model.add(Activation('softmax'))
 
     # myoptimizer = RMSprop(lr=0.00001, rho=0.9, epsilon=1e-06)
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
