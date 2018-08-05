@@ -16,10 +16,10 @@ def build_model(datasize=36):
     DROPOUT = 0.5  #{{choice([0.3, 0.5, 0.7])}}
 
     model = Sequential()
-    model.add(Conv2D(32, (3, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(32, (6, 4), padding='same', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
-    model.add(Conv2D(16, (5, 4), padding='valid', input_shape=(datasize, 4, 1), activation='relu',
+    model.add(Conv2D(16, (8, 4), padding='valid', input_shape=(datasize, 4, 1), activation='relu',
                      kernel_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
     # model.add(Conv2D(256, (5, 4),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
@@ -33,23 +33,32 @@ def build_model(datasize=36):
 
     model.add(Flatten())
 
-    model.add(Dense(64, activation='relu'))
+    model.add(Dense(128, activation='relu'))
     # model.add(Dropout(0.3))
-    # model.add(Dense(64, activation='relu'))
+    # model.add(Dense(5, activation='relu'))
     # model.add(Dropout(0.5))
     model.add(Dense(2, activation='sigmoid'))
-    # model.add(Activation('softmax'))
+    model.add(Activation('softmax'))
 
-    myoptimizer = RMSprop(lr=0.00001, rho=0.9, epsilon=1e-06)
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    # myoptimizer = RMSprop(lr=0.00001, rho=0.9, epsilon=1e-06)
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     # model.compile(loss='binary_crossentropy', optimizer='Adadelta', metrics=['accuracy'])
     return model
 
 
 
-def train(model, X_train, Y_train):
-    tbCallBack = TensorBoard(log_dir='./Graph', histogram_freq=0, write_graph=True, write_images=True, write_grads=True)
-    history = model.fit(X_train, Y_train, batch_size=512, epochs=20, validation_split=0.1, shuffle=True, callbacks=[tbCallBack])
+def train(model, X_train, Y_train, debug=True):
+    if debug:
+        import time
+        log_dir = './Graph/'+str(time.time())
+        tbCallBack = TensorBoard(log_dir=log_dir, histogram_freq=1, write_graph=True, write_images=True, write_grads=True)
+        cbk = [tbCallBack]
+        verb = 1
+    else:
+        verb = 0
+        cbk = None
+    history = model.fit(X_train, Y_train, batch_size=512, epochs=10, validation_split=0.3, shuffle=True,
+                            callbacks=cbk, verbose=verb)
     return model, history
 
 

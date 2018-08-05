@@ -4,7 +4,31 @@ from sklearn.metrics import precision_recall_curve
 import matplotlib.pyplot as plt
 from model import *
 import os
+import time
+true=[int(x) for x in np.append(np.ones(100), np.zeros(len(test)-100), axis=0)]
+print(average_precision_score(true, predict))
 
+def my_pbm_aupr(result):
+    cnt = (result < 100).astype(np.int)
+    prec = np.zeros((100, 1), dtype=np.float)
+    recall = np.zeros((100, 1), dtype=np.float)
+    ap = 0
+    for i in range(100):
+        prec[i, 0] = np.sum(cnt[0:i+1]) / (i+1)
+        recall[i, 0] = np.sum(cnt[0:i+1]) / 100
+        if i == 0: continue
+        ap += (recall[i, 0] - recall[i-1, 0]) * prec[i, 0]
+    print('PBM average: '+str(ap)+'  '+str(np.sum(cnt[0:100]))+'/100')
+    fig1 = plt.figure(101)
+    plt.cla()
+    plt.plot(recall, prec)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision Recall graph\nAUPR = '+str(ap)+'    '+str(np.sum(cnt[0:100]))+'/100')
+    # plt.show()
+    fig1.savefig('aupr_graphs/'+str(time.time())+'.png')
+    plt.cla()
+    return cnt, ap
 
 def predict_on_pbm(model, pbm_dat):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
@@ -19,22 +43,19 @@ def predict_on_pbm(model, pbm_dat):
     idx = np.arange(how_much).reshape(how_much, 1)
     # res2 = np.concatenate((idx, res), axis=1)
     res2 = np.argsort(res[:, 0])
+    cnt, ap = my_pbm_aupr(res2)
     np.savetxt('pbm2.csv', res2, fmt='%.3f', newline=os.linesep)
     num_correct = np.sum(res2[0:100] < 100)
-    f = open('result.txt', 'a')
-    f.write(str(num_correct)+'\n')
-    f.close()
-    print (num_correct)
+    return cnt, ap
+
 
 
 
 
 def predict_and_calculate_aupr(model, x_test, y_test):
-    p1 = predict(model, x_test[0:10000, :, :, :])
-    p2 = predict(model, x_test[-10000:-1, :, :, :])
-    y_score = np.concatenate((p1[:, 1] - p1[:, 0], p2[:, 1] - p2[:, 0]))
-    # y_score = np.concatenate((np.argmax(p1, axis=1), np.argmax(p2, axis=1)))
-    y_test = np.concatenate((np.argmax(y_test[0:10000, :], axis=1), np.argmax(y_test[-10000:-1, :], axis=1)))
+    y_score = predict(model, x_test)
+
+
     np.savetxt('y_score.csv', y_score, fmt='%.3f', newline=os.linesep)
     np.savetxt('y_testsss.csv', y_test, fmt='%.3f', newline=os.linesep)
     # y_score = np.zeros(y_test.shape)
@@ -47,7 +68,7 @@ def predict_and_calculate_aupr(model, x_test, y_test):
         average_precision))
 
 
-    precision, recall, _ = precision_recall_curve(y_test, y_score)
+    precision, recall, _ = precision_recall_curve(y_test[:,1]-y_test[:,0], y_score[:,1]-y_score[:,0])
     fig = plt.figure(3)
     plt.step(recall, precision, color='b', alpha=0.2,
              where='post')
