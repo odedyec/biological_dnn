@@ -57,7 +57,7 @@ def train(model, X_train, Y_train, debug=True):
     else:
         verb = 0
         cbk = None
-    history = model.fit(X_train, Y_train, batch_size=512, epochs=10, validation_split=0.3, shuffle=True,
+    history = model.fit(X_train, Y_train, batch_size=64, epochs=10, validation_split=0.3, shuffle=True,
                             callbacks=cbk, verbose=verb)
     return model, history
 
