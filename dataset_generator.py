@@ -1,25 +1,23 @@
 from keras.utils import to_categorical
 import numpy as np
 import pandas as pd
+import time
 
+TRAIN_SIZE = 30000
+TEST_SIZE = 2
 
-def label_generator(size1, size2):
+def label_generator(num_of_labels, size):
 	"""
 	Create a two coloum label set
 	:param size1:
 	:param size2:
 	:return:
 	"""
-	lab1 = np.concatenate((
-                        np.ones((size1, 1), dtype=float),
-                        np.zeros((size1, 1), dtype=float)),
-                   axis=1)
-	lab2 = np.concatenate((
-        np.zeros((size2, 1), dtype=float),
-        np.ones((size2, 1), dtype=float)),
-        axis=1)
+	lab = np.zeros((size, num_of_labels), dtype=np.float)
+	length_per_label = int(size / num_of_labels)
+	for i in range(num_of_labels):
+		lab[(i * length_per_label):((i+1) * length_per_label), i] = 1.0
 
-	lab = np.concatenate((lab1, lab2), axis=0)
 	return lab
 
 
@@ -31,7 +29,7 @@ def suffle_data_label(a, b):
 	return a2, b2
 
 
-def split_train_test(selex0, selex1, train_size):
+def split_train_test(selex_data, train_size, test_size):
 	"""
 	split the selex inputs into train and test sets
 	:param selex0:
@@ -39,14 +37,20 @@ def split_train_test(selex0, selex1, train_size):
 	:param train_size:
 	:return:
 	"""
-	np.random.shuffle(selex0)
-	np.random.shuffle(selex1)
-	x_train = np.concatenate((selex0[0:int(train_size/2), :, :, :], selex1[0:int(train_size/2), :, :, :]), axis=0)
-	x_test = np.concatenate((selex0[int(train_size / 2)+1:, :, :, :], selex1[int(train_size / 2)+1:, :, :, :]), axis=0)
+	split_size = len(selex_data)
+	x_train = np.array([])
+	x_test = np.array([])
+	for selex in selex_data:
+		np.random.shuffle(selex)
+		if len(x_test) == 0:
+			x_train = selex[0:int(train_size/split_size), :, :, :]
+			x_test = selex[int(train_size / split_size)+1:int(train_size / split_size)+1+int(test_size/split_size), :, :, :]
+			continue
+		x_train = np.concatenate((x_train, selex[0:int(train_size/split_size), :, :, :]), axis=0)
+		x_test = np.concatenate((x_test, selex[int(train_size / split_size)+1:int(train_size / split_size)+1+int(test_size/split_size), :, :, :]), axis=0)
 
-	y_train = label_generator(int(train_size/2), int(train_size/2))
-
-	y_test = label_generator(int(len(selex0)-train_size/2-1), int(len(selex1)-train_size/2-1))
+	y_train = label_generator(split_size, train_size)
+	y_test = label_generator(split_size, test_size)
 
 	return x_train, x_test, y_train, y_test
 
@@ -82,7 +86,7 @@ def pbm_dataset_generator(filename):
 	return arr
 
 
-def selex_dataset_generator(filename):
+def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_size=36):
 	"""
 	Open a selex file and transform it to two numpy lists.
 	One for the onehot encoded DNA sequence
@@ -90,24 +94,33 @@ def selex_dataset_generator(filename):
 	:param filename:
 	:return:
 	"""
-
-	dat = pd.read_csv(filename, delimiter='\t', usecols=[0], header=-1)
-	f = dat.get(0)
-	data = []
-	import time
 	t = time.time()
-	for line2 in f:
-		encoded_line = oneHot(line2)
+	f = open(filename, 'r')  # pd.read_csv(filename, delimiter='\t', usecols=[0], header=-1)
+	dat = f.read().split()[0::2]
+	data = []
+	n = len(dat)
+	idx = np.arange(n)
+	# np.random.shuffle(idx)
+
+	for i in range(data_to_load):
+		encoded_line = oneHot(dat[idx[i]])
 		# if (encoded_line.shape != (20, 4)):
 		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
 		# 	continue
 		# print encoded_line.shape
-		padding = (36 - len(encoded_line)) / 2
-		encoded_line = np.concatenate((np.concatenate((0.125 * np.ones((padding, 4)), encoded_line)), 0.125 * np.ones((padding, 4))))
+		padding = int((selex_size - len(encoded_line)) / 2)
+		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
 		data.append(encoded_line)
+		# encoded_line_rev = np.zeros(encoded_line.shape)
+		# encoded_line_rev[:, 0] = encoded_line[:, 2]
+		# encoded_line_rev[:, 1] = encoded_line[:, 3]
+		# encoded_line_rev[:, 2] = encoded_line[:, 0]
+		# encoded_line_rev[:, 3] = encoded_line[:, 1]
+		# encoded_line_rev = encoded_line_rev[::-1]
+		# data.append(encoded_line_rev)
 
 	data = np.asarray(data)
-	print 'Took ', time.time() - t, ' seconds to encode data, for ', filename
+	print('Took ', time.time() - t, ' seconds to encode data, for ', filename)
 	return data, None
 
 
@@ -128,3 +141,74 @@ def load_dataset():
 	x_test = f["x_test"].value
 	y_test = f["y_test"].value
 	return x_train, x_test, y_train, y_test
+
+
+def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=100000, SELEX_SIZE=36, test_size=100000):
+	pbm_data = pbm_dataset_generator(PBM_FILE)
+	if GENERATE_DATASET:  # load data and OneHot encode data
+		print(pbm_data.shape)
+		selex_4, _ = selex_dataset_generator(SELEX_FILES[-1], int((train_size+test_size)/2+1), selex_size=SELEX_SIZE)
+		# selex_3, _ = selex_dataset_generator(SELEX_FILES[-2], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		# selex_2, _ = selex_dataset_generator(SELEX_FILES[-3], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		# selex_1, _ = selex_dataset_generator(SELEX_FILES[-4], (train_size+test_size)/5+1, selex_size=SELEX_SIZE)
+		selex_0, _ = selex_dataset_generator(SELEX_FILES[0], int((train_size+test_size)/2+1), selex_size=SELEX_SIZE)
+
+		selex_data = list()
+		selex_data.append(selex_0.reshape((len(selex_0), SELEX_SIZE, 4, 1)))
+		# selex_data.append(selex_1.reshape((len(selex_1), SELEX_SIZE, 4, 1)))
+		# selex_data.append(selex_2.reshape((len(selex_2), SELEX_SIZE, 4, 1)))
+		# selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
+		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
+
+		x_train, x_test, y_train, y_test = split_train_test(selex_data, train_size, test_size)
+		save_dataset(x_train, x_test, y_train, y_test)
+	else:  # Load from data_tf1.hdf5 file
+		t = time.time()
+		x_train, x_test, y_train, y_test = load_dataset()
+		print('Took ', time.time() - t, ' seconds to load data from h5py file')
+	return x_train, x_test, y_train, y_test, pbm_data
+
+import sys
+
+def get_argv():
+    """
+    Get input from sys.argv
+    :return:
+    """
+    if len(sys.argv) < 3:
+        print("Length of input arguments is ", len(sys.argv))
+        print("\nUsage:\n python main.py pbm_file SELEX_FILE_0 SELEX_FILE_1 ...")
+        print("\nUsage2:\n python main.py pbm_file #of_selex_0 #of_selex_1 ...")
+        sys.exit(0)
+
+    PBM_FILE = sys.argv[1]
+    SELEX_FILES = [sys.argv[i] for i in range(2, len(sys.argv))]
+    if SELEX_FILES[0].isdigit():
+        SELEX_FILES = list(map(int, SELEX_FILES))
+    return PBM_FILE, SELEX_FILES
+
+
+def parse_args(PBM_FILE, SELEX_FILES):
+    """
+    Transform selex numbers to filenames.
+    :param PBM_FILE: Required for full path
+    :param SELEX_FILES: List of numbers of SELEX cycles, or filenames
+    :return: Filenames of everything
+    """
+    if len(SELEX_FILES) < 1:
+        parse_args()
+    if type(SELEX_FILES[0]) == int:
+        base = PBM_FILE.split('_')[0]
+        selex = [base+'_selex_'+str(i)+'.txt' for i in SELEX_FILES]
+    return PBM_FILE, selex
+
+
+if __name__ == '__main__':
+	PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]  # get_argv()
+	print(PBM_FILE)
+	print(SELEX_FILES)
+	# PBM_FILE, SELEX_FILES =
+	PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
+	generate_data(PBM_FILE, SELEX_FILES, test_size=TEST_SIZE, train_size=TRAIN_SIZE)
+
+

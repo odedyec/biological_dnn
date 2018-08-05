@@ -18,7 +18,7 @@ def build_model(datasize=36):
     model = Sequential()
     model.add(Conv2D(32, (3, 1),padding='same', input_shape=(datasize, 4, 1), activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1),padding='same'))
-    model.add(Conv2D(64, (3, 1),padding='same',activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
+    model.add(Conv2D(64, (3, 1),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(3, 1), strides=(1, 1), padding='same'))
     model.add(Conv2D(64, (5, 2),padding='same', activation='relu', kernel_constraint=maxnorm(W_maxnorm)))
     model.add(MaxPool2D(pool_size=(5, 1), strides=(1, 1), padding='same'))
@@ -47,8 +47,8 @@ def train(model, X_train, Y_train):
     # data_code = 'DATACODE'
     # topdir = 'TOPDIR'
     # model_arch = 'MODEL_ARCH'
-    model.fit(X_train, Y_train, batch_size=512, epochs=5, validation_split=0.2, shuffle=True)
-    return model
+    model.fit(X_train, Y_train, batch_size=512, epochs=5, validation_split=0.2, shuffle=True, verbose=False)
+    return model, None
 
 
 

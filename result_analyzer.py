@@ -1,12 +1,37 @@
 import numpy as np
 from sklearn.metrics import average_precision_score
+from sklearn.metrics import precision_recall_curve
+import matplotlib.pyplot as plt
 from model import *
 import os
+import time
 
+
+def my_pbm_aupr(result):
+    cnt = (result < 100).astype(np.int)
+    prec = np.zeros((100, 1), dtype=np.float)
+    recall = np.zeros((100, 1), dtype=np.float)
+    ap = 0
+    for i in range(100):
+        prec[i, 0] = np.sum(cnt[0:i+1]) / (i+1)
+        recall[i, 0] = np.sum(cnt[0:i+1]) / 100
+        if i == 0: continue
+        ap += (recall[i, 0] - recall[i-1, 0]) * prec[i, 0]
+    print('PBM average: '+str(ap)+'  '+str(np.sum(cnt[0:100]))+'/100')
+    fig1 = plt.figure(101)
+    plt.cla()
+    plt.plot(recall, prec)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision Recall graph\nAUPR = '+str(ap)+'    '+str(np.sum(cnt[0:100]))+'/100')
+    # plt.show()
+    fig1.savefig('aupr_graphs/'+str(time.time())+'.png')
+    plt.cla()
+    return cnt, ap
 
 def predict_on_pbm(model, pbm_dat):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
-    print pbm_dat.shape
+    print (pbm_dat.shape)
     how_much = len(pbm_dat)
     # res = np.zeros((how_much, 1))
     res = predict(model, pbm_dat[:, 0:36, :, :])
@@ -17,22 +42,19 @@ def predict_on_pbm(model, pbm_dat):
     idx = np.arange(how_much).reshape(how_much, 1)
     # res2 = np.concatenate((idx, res), axis=1)
     res2 = np.argsort(res[:, 0])
+    cnt, ap = my_pbm_aupr(res2)
     np.savetxt('pbm2.csv', res2, fmt='%.3f', newline=os.linesep)
     num_correct = np.sum(res2[0:100] < 100)
-    f = open('result.txt', 'a')
-    f.write(str(num_correct)+'\n')
-    f.close()
-    print num_correct
+    return cnt, ap
+
 
 
 
 
 def predict_and_calculate_aupr(model, x_test, y_test):
-    p1 = predict(model, x_test[0:10000, :, :, :])
-    p2 = predict(model, x_test[-10000:-1, :, :, :])
-    y_score = np.concatenate((p1[:, 1] - p1[:, 0], p2[:, 1] - p2[:, 0]))
-    # y_score = np.concatenate((np.argmax(p1, axis=1), np.argmax(p2, axis=1)))
-    y_test = np.concatenate((np.argmax(y_test[0:10000, :], axis=1), np.argmax(y_test[-10000:-1, :], axis=1)))
+    y_score = predict(model, x_test)
+
+
     np.savetxt('y_score.csv', y_score, fmt='%.3f', newline=os.linesep)
     np.savetxt('y_testsss.csv', y_test, fmt='%.3f', newline=os.linesep)
     # y_score = np.zeros(y_test.shape)
@@ -43,11 +65,10 @@ def predict_and_calculate_aupr(model, x_test, y_test):
 
     print('Average precision-recall score: {0:0.2f}'.format(
         average_precision))
-    from sklearn.metrics import precision_recall_curve
-    import matplotlib.pyplot as plt
 
-    precision, recall, _ = precision_recall_curve(y_test, y_score)
 
+    precision, recall, _ = precision_recall_curve(y_test[:,1]-y_test[:,0], y_score[:,1]-y_score[:,0])
+    fig = plt.figure(3)
     plt.step(recall, precision, color='b', alpha=0.2,
              where='post')
     plt.fill_between(recall, precision, step='post', alpha=0.2,
@@ -59,4 +80,28 @@ def predict_and_calculate_aupr(model, x_test, y_test):
     plt.xlim([0.0, 1.0])
     plt.title('2-class Precision-Recall curve: AP={0:0.2f}'.format(
         average_precision))
-    plt.show()
+    fig.savefig('aupr_selex.png')
+    # plt.show()
+
+
+def plot_acc_loss(history):
+    # summarize history for accuracy
+    fig1 = plt.figure(1)
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'validation'], loc='upper left')
+    fig1.savefig('accuracy.png')
+    # plt.show()
+    # summarize history for loss
+    fig2 = plt.figure(2)
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'validation'], loc='upper left')
+    fig2.savefig('loss.png')
+    # plt.show()
