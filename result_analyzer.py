@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from model import *
 import os
 import time
-true=[int(x) for x in np.append(np.ones(100), np.zeros(len(test)-100), axis=0)]
-print(average_precision_score(true, predict))
+# true=[int(x) for x in np.append(np.ones(100), np.zeros(len(test)-100), axis=0)]
+# print(average_precision_score(true, predict))
 
 def my_pbm_aupr(result):
     cnt = (result < 100).astype(np.int)
