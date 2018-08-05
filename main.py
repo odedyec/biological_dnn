@@ -34,15 +34,14 @@ def main(PBM_FILE, SELEX_FILES):
     else:
 
         if TRAIN:  # Train network
-
-            model, history = train(model, x_train, y_train, debug=False)
+            model, history = train(model, x_train, y_train)
             save_network(model)
             # plot_acc_loss(history)
         else:      # Load network from file
             model = load_model(model)
         print("===============================")
     # visualize_model(model)
-    predict_and_calculate_aupr(model, x_test, y_test)
+    # predict_and_calculate_aupr(model, x_test, y_test)
     cnt, ap = predict_on_pbm(model, pbm_data)
     return cnt, ap
 
@@ -51,25 +50,19 @@ def loop_over_all():
     import os.path
     import time
     wSave = model.get_weights()
-    for i in range(1, 124):
-        pbm_file_name = '~/train/TF%d_pbm.txt'%(i)
-        # pbm_file_name = '~/train/TF%d_pbm.txt'%(i)
+    for i in range(1, 124): #124):
+        pbm_file_name = 'train/TF%d_pbm.txt'%(i)
         selex_list = []
         for j in range(7):
-            selex_file_name = '~/train/TF%d_selex_%d.txt'%(i,j)
+            selex_file_name = 'train/TF%d_selex_%d.txt'%(i,j)
             if not os.path.isfile(selex_file_name):
                 break
             selex_list.append(selex_file_name)
         t = time.time()
         model.set_weights(wSave)
-        try:
-            cnt, ap = main(pbm_file_name, selex_list)
-        except:
-            print("Fail at TF{}".format(i))
-            cnt = [0] * 100
-            ap = 0
+        cnt, ap = main(pbm_file_name, selex_list)
         f = open('result.csv', 'a')
-        f.write(str(time.time() - t) + ',' + str(sum(cnt[0:100])) + ',' + str(ap) + '\n')
+        f.write(str(time.time() - t) + ', ' + str(sum(cnt[0:100])) + ',' + str(ap) + '\n')
         f.close()
 
 
@@ -77,6 +70,11 @@ def loop_over_all():
 if __name__ == '__main__':
     loop_over_all()
     # PBM_FILE, SELEX_FILES = 'train/TF1_pbm.txt', [0, 1, 2, 3, 4]  # get_argv()
+    # print(PBM_FILE)
+    # print(SELEX_FILES)
+    # # PBM_FILE, SELEX_FILES =
     # PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
+    # print(PBM_FILE)
+    # print(SELEX_FILES)
     # main(PBM_FILE, SELEX_FILES)
 
