@@ -7,7 +7,7 @@ from keras.regularizers import *
 from keras.callbacks import TensorBoard
 from keras.constraints import maxnorm
 from keras.utils import plot_model
-from tensorboard._vendor.bleach import callbacks
+# from tensorboard._vendor.bleach import callbacks
 
 
 def build_model(datasize=36):
