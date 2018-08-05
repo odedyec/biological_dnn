@@ -53,6 +53,7 @@ def loop_over_all():
     wSave = model.get_weights()
     for i in range(1, 124):
         pbm_file_name = '~/train/TF%d_pbm.txt'%(i)
+        # pbm_file_name = '~/train/TF%d_pbm.txt'%(i)
         selex_list = []
         for j in range(7):
             selex_file_name = '~/train/TF%d_selex_%d.txt'%(i,j)
