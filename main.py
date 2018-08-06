@@ -72,11 +72,11 @@ def loop_over_all():
 
 
 if __name__ == '__main__':
-    loop_over_all()
-    # import time
-    # t = time.time()
-    # PBM_FILE, SELEX_FILES = 'train/TF2_pbm.txt', [0, 1, 2, 3, 4]  #get_argv()  #
-    # PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
-    # main(PBM_FILE, SELEX_FILES)
-    # print("Took "+str(time.time() - t)+" seconds for program\n")
+    # loop_over_all()
+    import time
+    t = time.time()
+    PBM_FILE, SELEX_FILES = 'train/TF2_pbm.txt', [0, 1, 2, 3, 4]  #get_argv()  #
+    PBM_FILE, SELEX_FILES = parse_args(PBM_FILE, SELEX_FILES)
+    main(PBM_FILE, SELEX_FILES)
+    print("Took "+str(time.time() - t)+" seconds for program\n")
 

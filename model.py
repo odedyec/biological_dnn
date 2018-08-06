@@ -29,7 +29,7 @@ def build_model(datasize=36):
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dense(2, activation='sigmoid'))
-    model.add(Activation('softmax'))
+    # model.add(Activation('softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return model
