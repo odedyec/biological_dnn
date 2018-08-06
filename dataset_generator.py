@@ -22,6 +22,12 @@ def label_generator(num_of_labels, size):
 
 
 def suffle_data_label(a, b):
+	"""
+	Utility function to shuffle data and labels
+	:param a:
+	:param b:
+	:return:
+	"""
 	c = np.c_[a.reshape(len(a), -1), b.reshape(len(b), -1)]
 	np.random.shuffle(c)
 	a2 = c[:, :a.size // len(a)].reshape(a.shape)
@@ -104,20 +110,17 @@ def selex_dataset_generator(filename, data_to_load=TRAIN_SIZE+TEST_SIZE, selex_s
 
 	for i in range(data_to_load):
 		encoded_line = oneHot(dat[idx[i]])
-		# if (encoded_line.shape != (20, 4)):
-		# 	print "Warning! not a (20, 4) shape, but", encoded_line.shape
-		# 	continue
-		# print encoded_line.shape
 		padding = int((selex_size - len(encoded_line)) / 2)
 		encoded_line = np.concatenate((np.concatenate((0.25 * np.ones((padding, 4)), encoded_line)), 0.25 * np.ones((padding, 4))))
 		data.append(encoded_line)
-		encoded_line_rev = np.zeros(encoded_line.shape)
-		encoded_line_rev[:, 0] = encoded_line[:, 2]
-		encoded_line_rev[:, 1] = encoded_line[:, 3]
-		encoded_line_rev[:, 2] = encoded_line[:, 0]
-		encoded_line_rev[:, 3] = encoded_line[:, 1]
-		encoded_line_rev = encoded_line_rev[::-1]
-		data.append(encoded_line_rev)
+		""" Reverse complement"""
+		# encoded_line_rev = np.zeros(encoded_line.shape)
+		# encoded_line_rev[:, 0] = encoded_line[:, 2]
+		# encoded_line_rev[:, 1] = encoded_line[:, 3]
+		# encoded_line_rev[:, 2] = encoded_line[:, 0]
+		# encoded_line_rev[:, 3] = encoded_line[:, 1]
+		# encoded_line_rev = encoded_line_rev[::-1]
+		# data.append(encoded_line_rev)
 
 	data = np.asarray(data)
 	print('Took ', time.time() - t, ' seconds to encode data, for ', filename)
@@ -144,6 +147,16 @@ def load_dataset():
 
 
 def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=100000, SELEX_SIZE=36, test_size=100000):
+	"""
+	Generate entire dataset
+	:param PBM_FILE: PBM file name
+	:param SELEX_FILES: SELEX filename list
+	:param GENERATE_DATASET: Boolean to load from file dataset or not
+	:param train_size: Size of output training data
+	:param SELEX_SIZE: To how much to pad the selex sequence
+	:param test_size: Size of output testing data
+	:return:
+	"""
 	pbm_data = pbm_dataset_generator(PBM_FILE)
 	if GENERATE_DATASET:  # load data and OneHot encode data
 		print(pbm_data.shape)
@@ -160,7 +173,7 @@ def generate_data(PBM_FILE, SELEX_FILES, GENERATE_DATASET=True, train_size=10000
 		# selex_data.append(selex_3.reshape((len(selex_3), SELEX_SIZE, 4, 1)))
 		selex_data.append(selex_4.reshape((len(selex_4), SELEX_SIZE, 4, 1)))
 
-		x_train, x_test, y_train, y_test = split_train_test(selex_data, 2*train_size, 2*test_size)
+		x_train, x_test, y_train, y_test = split_train_test(selex_data, train_size, test_size)
 		save_dataset(x_train, x_test, y_train, y_test)
 	else:  # Load from data_tf1.hdf5 file
 		t = time.time()
@@ -195,11 +208,13 @@ def parse_args(PBM_FILE, SELEX_FILES):
     :param SELEX_FILES: List of numbers of SELEX cycles, or filenames
     :return: Filenames of everything
     """
+    selex = SELEX_FILES
     if len(SELEX_FILES) < 1:
-        parse_args()
+        return None, None
     if type(SELEX_FILES[0]) == int:
         base = PBM_FILE.split('_')[0]
         selex = [base+'_selex_'+str(i)+'.txt' for i in SELEX_FILES]
+
     return PBM_FILE, selex
 
 

@@ -29,26 +29,35 @@ def my_pbm_aupr(result):
     plt.cla()
     return cnt, ap
 
-def predict_on_pbm(model, pbm_dat):
+
+def sort_pbm_file(filename, idx):
+    """
+    Open a PBM file andtransform it to a numpy encoded list
+    :param filename: a PBM file with N lines of DNA sequences
+    :return: an Nx4 numpy array
+    """
+    ofile = filename.replace("_unsorted", '')
+    f = open(filename, 'r')
+    data = f.read()
+    f.close()
+    of = open(ofile, 'w')
+    for i in idx:
+        of.write(data[int(i)])
+    of.close()
+    arr = np.array(data)
+    return arr
+
+
+
+def predict_on_pbm(model, pbm_dat, pbm_filename=None):
     pbm_dat = pbm_dat.reshape((len(pbm_dat), 60, 4, 1))
-    print (pbm_dat.shape)
-    how_much = len(pbm_dat)
-    # res = np.zeros((how_much, 1))
     res = predict(model, pbm_dat[:, 0:36, :, :])
-    # for i in xrange(16):
-    #     p = predict(model, pbm_dat[0:how_much, (i+0):(i+20), :, :])
-    #     res = res + (p[:, 1]).reshape(how_much, 1)
-    np.savetxt('pbm.csv', res, fmt='%.3f', newline=os.linesep)
-    idx = np.arange(how_much).reshape(how_much, 1)
-    # res2 = np.concatenate((idx, res), axis=1)
+
     res2 = np.argsort(res[:, 0])
+    if pbm_filename is not None:
+        sort_pbm_file(pbm_filename, res2)
     cnt, ap = my_pbm_aupr(res2)
-    np.savetxt('pbm2.csv', res2, fmt='%.3f', newline=os.linesep)
-    num_correct = np.sum(res2[0:100] < 100)
     return cnt, ap
-
-
-
 
 
 def predict_and_calculate_aupr(model, x_test, y_test):
